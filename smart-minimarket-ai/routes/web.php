@@ -3,6 +3,7 @@
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\HistoryController as ControllersHistoryController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\RestockController;
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KasirController;
@@ -20,6 +21,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/kasir/history', [KasirController::class, 'history'])->name('kasir.history');
     Route::get('/kasir/history/{sale}', [KasirController::class, 'detail'])->name('kasir.detail');
 });
+
+Route::get('/restock-ai', [RestockController::class, 'index'])
+    ->name('restock.ai');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/history', [HistoryController::class, 'index'])
