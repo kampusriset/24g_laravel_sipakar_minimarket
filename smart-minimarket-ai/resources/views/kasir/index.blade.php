@@ -106,10 +106,8 @@
 
                             <span>No Invoice</span>
 
-                            <span class="font-bold">
-
-                                INV-202607170001
-
+                            <span class="font-semibold">
+                                {{ $invoice }}
                             </span>
 
                         </div>

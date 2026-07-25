@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\HistoryController as ControllersHistoryController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\ProfileController;
@@ -15,25 +17,35 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/kasir/history', [KasirController::class, 'history'])->name('kasir.history');
+    Route::get('/kasir/history/{sale}', [KasirController::class, 'detail'])->name('kasir.detail');
+});
 
-    Route::get('/kasir', [KasirController::class, 'index'])
-        ->name('kasir.index');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/history', [HistoryController::class, 'index'])
+        ->name('history.index');
+    Route::get('/history/{sale}', [HistoryController::class, 'show'])
+        ->name('history.show');
+    Route::get('/history/{sale}/pdf', [HistoryController::class, 'pdf'])
+        ->name('history.pdf');
+});
 
-    Route::post('/kasir/checkout', [KasirController::class, 'checkout'])
-        ->name('kasir.checkout');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/kasir', [KasirController::class, 'index'])->name('kasir.index');
+    Route::post('/kasir/checkout', [KasirController::class, 'checkout'])->name('kasir.checkout');
+    Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+use App\Http\Controllers\DashboardController;
 
-    Route::get('/products/search', [ProductController::class, 'search'])
-        ->name('products.search');
+Route::middleware(['auth'])->group(function () {
 
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
-
-    Route::patch('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
-
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
+    Route::get('/dashboard-report',
+        [DashboardController::class,'index'])
+        ->name('dashboard.report');
 
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

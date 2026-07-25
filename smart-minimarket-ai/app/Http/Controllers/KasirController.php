@@ -18,9 +18,23 @@ class KasirController extends Controller
      */
     public function index()
     {
-       $categories = Category::orderBy('nama_kategori')->get();
+        $categories = Category::orderBy('nama_kategori')->get();
+        $today = now()->format('Ymd');
+        $lastSale = Sale::whereDate('tanggal', today())
+            ->latest('id')
+            ->first();
 
-        return view('kasir.index', compact('categories'));
+        if ($lastSale) {
+            $lastNumber = (int) substr($lastSale->invoice_number, -4);
+            $invoice = "INV-{$today}-" . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+        } else {
+            $invoice = "INV-{$today}-0001";
+        }
+
+        return view('kasir.index', compact(
+            'categories',
+            'invoice'
+        ));
     }
 
     /**
@@ -33,7 +47,6 @@ class KasirController extends Controller
             'total' => 'required|numeric|min:1',
             'bayar' => 'required|numeric',
         ]);
-
         if (!Auth::check()) {
             return response()->json([
                 'success' => false,
@@ -42,11 +55,19 @@ class KasirController extends Controller
         }
 
         try {
-
             DB::beginTransaction();
-
             // Generate Invoice
-            $invoice = 'INV-' . now()->format('YmdHis');
+            $today = now()->format('Ymd');
+            $lastSale = Sale::whereDate('tanggal', today())
+                ->latest('id')
+                ->first();
+            if ($lastSale) {
+                $lastNumber = (int) substr($lastSale->invoice_number, -4);
+                $number = str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+            } else {
+                $number = '0001';
+            }
+            $invoice = "INV-{$today}-{$number}";
 
             // Simpan Sales
             $sale = Sale::create([
@@ -59,9 +80,7 @@ class KasirController extends Controller
 
             // Simpan Detail Penjualan
             foreach ($request->cart as $item) {
-
                 $product = Product::findOrFail($item['id']);
-
                 if ($product->stock < $item['qty']) {
                     throw new \Exception(
                         "Stock {$product->nama_produk} tidak mencukupi."
@@ -75,7 +94,6 @@ class KasirController extends Controller
                     'harga'      => $product->harga_jual,
                     'subtotal'   => $item['qty'] * $product->harga_jual,
                 ]);
-
                 // Kurangi Stock
                 $product->stock -= $item['qty'];
                 $product->save();
@@ -88,7 +106,6 @@ class KasirController extends Controller
                 'jumlah_bayar'  => $request->bayar,
                 'kembalian'     => $request->bayar - $request->total,
             ]);
-
             DB::commit();
 
             return response()->json([
@@ -97,7 +114,6 @@ class KasirController extends Controller
                 'message' => 'Transaksi berhasil.'
             ]);
         } catch (\Throwable $e) {
-
             DB::rollBack();
 
             return response()->json([
@@ -105,5 +121,25 @@ class KasirController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function history()
+    {
+        $sales = Sale::with('user')
+            ->latest()
+            ->paginate(10);
+
+        return view('kasir.history', compact('sales'));
+    }
+
+    public function detail(Sale $sale)
+    {
+        $sale->load([
+            'user',
+            'saleDetails.product',
+            'payment'
+        ]);
+
+        return view('kasir.detail', compact('sale'));
     }
 }
