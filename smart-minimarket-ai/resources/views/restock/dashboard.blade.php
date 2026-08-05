@@ -55,21 +55,34 @@
 </div>
 
 {{-- Pie Chart --}}
-<div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
 
-    <h2 class="text-2xl font-bold mb-6">
+    {{-- Pie Chart --}}
+    <div class="bg-white rounded-2xl shadow-lg p-6">
 
-        📊 Distribusi Status AI Restock
+        <h2 class="text-lg font-bold mb-4">
+            Distribusi Status AI
+        </h2>
 
-    </h2>
+        <div class="flex justify-center items-center h-72">
 
-    <div class="flex justify-center">
+            <canvas
+                id="statusChart"
+                class="max-w-[220px] max-h-[220px]">
+            </canvas>
 
-        <canvas
-            id="statusChart"
-            width="350"
-            height="350">
-        </canvas>
+        </div>
+
+    </div>
+
+    {{-- Trend Penjualan --}}
+    <div class="bg-white rounded-2xl shadow-lg p-6 lg:col-span-2">
+
+        <h2 class="text-lg font-bold mb-4">
+            Trend Penjualan
+        </h2>
+
+        <canvas id="trendChart"></canvas>
 
     </div>
 
@@ -79,21 +92,8 @@
 
     <h2 class="text-2xl font-bold mb-6">
 
-        📈 Top 10 Prioritas Restock
+        Top 10 Prioritas Restock
 
     </h2>
 
     <canvas id="priorityChart"></canvas>
-
-</div>
-<div class="bg-white rounded-2xl shadow-lg p-8 mb-8">
-
-    <h2 class="text-2xl font-bold mb-6">
-
-        📈 Trend Penjualan
-
-    </h2>
-
-    <canvas id="trendChart"></canvas>
-
-</div>

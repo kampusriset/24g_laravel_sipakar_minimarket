@@ -24,17 +24,63 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = fuzzyData[index];
 
             if (!data) return;
+            const ruleContainer =
+                document.getElementById("ruleContainer");
+
+            ruleContainer.innerHTML = "";
+
+            data.rule
+
+                .filter(rule => rule.alpha > 0)
+                .forEach(rule => {
+
+                    ruleContainer.innerHTML += `
+        
+                <div class="border rounded-lg p-3">
+        
+                    <div class="font-semibold">
+        
+                        ${rule.nama}
+        
+                    </div>
+        
+                    <div>
+        
+                        IF Stock <b>${rule.stock}</b>
+        
+                        AND Penjualan <b>${rule.penjualan}</b>
+        
+                        AND Lead Time <b>${rule.leadTime}</b>
+        
+                    </div>
+        
+                    <div>
+        
+                        THEN <b>${rule.status}</b>
+        
+                    </div>
+        
+                    <div class="text-red-600">
+        
+                        α = ${rule.alpha}
+        
+                    </div>
+        
+                </div>
+        
+                `;
+
+                });
 
             document.getElementById("namaProduk").textContent = data.nama;
             document.getElementById("kategoriProduk").textContent = data.kategori;
 
             document.getElementById("stock").textContent = data.stock;
             document.getElementById("minimum").textContent = data.minimum;
-            document.getElementById("penjualan").textContent = data.penjualan;
+            document.getElementById("rataPenjualan").textContent = data.rataPenjualan ? data.rataPenjualan + " pcs/minggu": "0 pcs/minggu";
 
             document.getElementById("score").textContent = data.score;
             document.getElementById("status").textContent = data.status;
-            document.getElementById("ruleAI").textContent = data.rule;
 
             document.getElementById("stockSedikit").textContent = data.stockSedikit;
             document.getElementById("stockSedang").textContent = data.stockSedang;
@@ -43,6 +89,10 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("jualRendah").textContent = data.jualRendah;
             document.getElementById("jualSedang").textContent = data.jualSedang;
             document.getElementById("jualTinggi").textContent = data.jualTinggi;
+
+            document.getElementById("leadCepat").textContent = data.leadCepat;
+            document.getElementById("leadSedang").textContent = data.leadSedang;
+            document.getElementById("leadLama").textContent = data.leadLama;
 
             document.getElementById("barStockSedikit").style.width =
                 (data.stockSedikit * 100) + "%";
@@ -111,6 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
             closeModal();
         }
     });
+
 
     // ==========================
     // PIE CHART
@@ -205,9 +256,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     data: data.scores,
 
-                    backgroundColor: "#f59e0b",
+                    backgroundColor: "#ef4444",
 
-                    borderRadius: 10
+                    borderRadius: 8
 
                 }]
 

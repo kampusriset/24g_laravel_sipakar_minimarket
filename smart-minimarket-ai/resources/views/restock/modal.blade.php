@@ -1,65 +1,73 @@
 <div id="detailModal"
-    class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+    class="fixed inset-0 z-50 hidden bg-black/60 overflow-y-auto">
 
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl mx-4">
+    <div class="min-h-screen flex items-center justify-center p-3 md:p-6">
 
-        {{-- Header --}}
-        <div class="flex justify-between items-center border-b p-6">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-6xl">
 
-            <h2 class="text-2xl font-bold text-gray-800">
-                Detail Perhitungan AI Fuzzy
-            </h2>
+            {{-- Header --}}
+            <div class="flex justify-between items-center border-b p-4 md:p-6">
 
-            <button
-                id="btnCloseModal"
-                class="text-3xl font-bold text-gray-500 hover:text-red-600">
+                <h2 class="text-lg md:text-2xl font-bold text-gray-800">
+                    Detail Perhitungan AI Fuzzy
+                </h2>
 
-                &times;
+                <button
+                    id="btnCloseModal"
+                    class="text-3xl font-bold text-gray-500 hover:text-red-600">
 
-            </button>
+                    &times;
 
-        </div>
+                </button>
 
-        {{-- Body --}}
-        <div class="p-6 space-y-6">
+            </div>
 
-            {{-- Informasi Produk --}}
-            <div class="grid grid-cols-2 gap-6">
+            {{-- Body --}}
+            <div class="p-4 md:p-6 space-y-6 max-h-[80vh] overflow-y-auto">
 
-                <div>
+                {{-- Informasi Produk --}}
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                    <p class="mb-2">
-                        <span class="font-semibold">Produk :</span>
-                        <span id="namaProduk"></span>
-                    </p>
+                    <div class="bg-gray-50 rounded-xl p-5">
 
-                    <p class="mb-2">
-                        <span class="font-semibold">Kategori :</span>
-                        <span id="kategoriProduk"></span>
-                    </p>
+                        <h3 class="font-bold text-blue-600 mb-4">
+                            Informasi Produk
+                        </h3>
 
-                    <p class="mb-2">
-                        <span class="font-semibold">Stock :</span>
-                        <span id="stock"></span>
-                    </p>
+                        <p class="mb-2">
+                            <span class="font-semibold">Produk :</span>
+                            <span id="namaProduk"></span>
+                        </p>
 
-                    <p class="mb-2">
-                        <span class="font-semibold">Minimum Stock :</span>
-                        <span id="minimum"></span>
-                    </p>
+                        <p class="mb-2">
+                            <span class="font-semibold">Kategori :</span>
+                            <span id="kategoriProduk"></span>
+                        </p>
 
-                    <p>
-                        <span class="font-semibold">Terjual :</span>
-                        <span id="penjualan"></span>
-                    </p>
+                        <p class="mb-2">
+                            <span class="font-semibold">Stock :</span>
+                            <span id="stock"></span>
+                        </p>
 
-                </div>
+                        <p class="mb-2">
+                            <span class="font-semibold">Minimum Stock :</span>
+                            <span id="minimum"></span>
+                        </p>
 
-                <div>
+                        <p>
+                            <span class="font-semibold">Rata-rata Penjualan :</span>
+                            <span id="rataPenjualan"></span>
+                        </p>
 
-                    <div class="bg-blue-50 rounded-xl p-4">
+                    </div>
 
-                        <p class="mb-3">
+                    <div class="bg-blue-50 rounded-xl p-5">
+
+                        <h3 class="font-bold text-blue-700 mb-4">
+                            Hasil AI
+                        </h3>
+
+                        <p class="mb-4">
 
                             <span class="font-semibold">
                                 Score AI :
@@ -67,7 +75,7 @@
 
                             <span
                                 id="score"
-                                class="font-bold text-xl">
+                                class="font-bold text-xl text-red-600">
                             </span>
 
                         </p>
@@ -86,134 +94,224 @@
 
                 </div>
 
-            </div>
+                {{-- Membership --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-            <hr>
+                    {{-- Stock --}}
+                    <div class="bg-gray-50 rounded-xl p-5">
 
-            {{-- Membership --}}
-            <div class="grid grid-cols-2 gap-6">
+                        <h3 class="font-bold text-blue-600 mb-5">
 
-                <div class="bg-gray-50 rounded-xl p-5">
+                            Membership Stock
 
-                    <h3 class="font-bold text-blue-600 mb-4">
-                        Membership Stock
-                    </h3>
+                        </h3>
 
-                    <div class="mb-4">
+                        <div class="space-y-4">
 
-                        <div class="flex justify-between mb-1">
-                            <span>Sedikit</span>
-                            <span id="stockSedikit"></span>
-                        </div>
+                            <div>
 
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div
-                                id="barStockSedikit"
-                                class="bg-red-500 h-3 rounded-full transition-all duration-700"
-                                style="width:0%">
+                                <div class="flex justify-between mb-1">
+
+                                    <span>Sedikit</span>
+
+                                    <span id="stockSedikit"></span>
+
+                                </div>
+
+                                <div class="w-full bg-gray-200 rounded-full h-2 md:h-3">
+
+                                    <div
+                                        id="barStockSedikit"
+                                        class="bg-red-500 h-2 md:h-3 rounded-full transition-all duration-700"
+                                        style="width:0%">
+                                    </div>
+
+                                </div>
+
                             </div>
+
+                            <div>
+
+                                <div class="flex justify-between mb-1">
+
+                                    <span>Sedang</span>
+
+                                    <span id="stockSedang"></span>
+
+                                </div>
+
+                                <div class="w-full bg-gray-200 rounded-full h-2 md:h-3">
+
+                                    <div
+                                        id="barStockSedang"
+                                        class="bg-yellow-500 h-2 md:h-3 rounded-full transition-all duration-700"
+                                        style="width:0%">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div>
+
+                                <div class="flex justify-between mb-1">
+
+                                    <span>Banyak</span>
+
+                                    <span id="stockBanyak"></span>
+
+                                </div>
+
+                                <div class="w-full bg-gray-200 rounded-full h-2 md:h-3">
+
+                                    <div
+                                        id="barStockBanyak"
+                                        class="bg-green-500 h-2 md:h-3 rounded-full transition-all duration-700"
+                                        style="width:0%">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
                         </div>
 
                     </div>
 
-                    <div class="mb-4">
+                    {{-- Penjualan --}}
+                    <div class="bg-gray-50 rounded-xl p-5">
 
-                        <div class="flex justify-between mb-1">
-                            <span>Sedang</span>
-                            <span id="stockSedang"></span>
-                        </div>
+                        <h3 class="font-bold text-green-600 mb-5">
 
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div
-                                id="barStockSedang"
-                                class="bg-yellow-500 h-3 rounded-full transition-all duration-700"
-                                style="width:0%">
+                            Membership Penjualan
+
+                        </h3>
+
+                        <div class="space-y-4">
+
+                            <div>
+
+                                <div class="flex justify-between mb-1">
+
+                                    <span>Rendah</span>
+
+                                    <span id="jualRendah"></span>
+
+                                </div>
+
+                                <div class="w-full bg-gray-200 rounded-full h-2 md:h-3">
+
+                                    <div
+                                        id="barJualRendah"
+                                        class="bg-blue-500 h-2 md:h-3 rounded-full transition-all duration-700"
+                                        style="width:0%">
+                                    </div>
+
+                                </div>
+
                             </div>
+
+                            <div>
+
+                                <div class="flex justify-between mb-1">
+
+                                    <span>Sedang</span>
+
+                                    <span id="jualSedang"></span>
+
+                                </div>
+
+                                <div class="w-full bg-gray-200 rounded-full h-2 md:h-3">
+
+                                    <div
+                                        id="barJualSedang"
+                                        class="bg-yellow-500 h-2 md:h-3 rounded-full transition-all duration-700"
+                                        style="width:0%">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div>
+
+                                <div class="flex justify-between mb-1">
+
+                                    <span>Tinggi</span>
+
+                                    <span id="jualTinggi"></span>
+
+                                </div>
+
+                                <div class="w-full bg-gray-200 rounded-full h-2 md:h-3">
+
+                                    <div
+                                        id="barJualTinggi"
+                                        class="bg-red-500 h-2 md:h-3 rounded-full transition-all duration-700"
+                                        style="width:0%">
+                                    </div>
+
+                                </div>
+
+                            </div>
+
                         </div>
 
                     </div>
 
-                    <div>
+                    {{-- Lead Time --}}
+                    <div class="bg-gray-50 rounded-xl p-5">
 
-                        <div class="flex justify-between mb-1">
-                            <span>Banyak</span>
-                            <span id="stockBanyak"></span>
-                        </div>
+                        <h3 class="font-bold text-purple-600 mb-5">
 
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div
-                                id="barStockBanyak"
-                                class="bg-green-500 h-3 rounded-full transition-all duration-700"
-                                style="width:0%">
-                            </div>
-                        </div>
+                            Membership Lead Time
+
+                        </h3>
+
+                        <p class="mb-2">
+
+                            Cepat :
+                            <span id="leadCepat"></span>
+
+                        </p>
+
+                        <p class="mb-2">
+
+                            Sedang :
+                            <span id="leadSedang"></span>
+
+                        </p>
+
+                        <p>
+
+                            Lama :
+                            <span id="leadLama"></span>
+
+                        </p>
 
                     </div>
 
                 </div>
 
-                <div class="bg-gray-50 rounded-xl p-5">
+                {{-- Rule Aktif --}}
+                <div class="bg-blue-50 rounded-xl p-5">
 
-                    <h3 class="font-bold text-green-600 mb-4">
-                        Membership Penjualan
+                    <h3 class="font-bold text-blue-700 mb-4">
+
+                        Rule Mamdani Aktif
+
                     </h3>
 
-                    <div class="mb-4">
-
-                        <div class="flex justify-between mb-1">
-                            <span>Rendah</span>
-                            <span id="jualRendah"></span>
-                        </div>
-
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div
-                                id="barJualRendah"
-                                class="bg-blue-500 h-3 rounded-full transition-all duration-700"
-                                style="width:0%">
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div class="mb-4">
-
-                        <div class="flex justify-between mb-1">
-                            <span>Sedang</span>
-                            <span id="jualSedang"></span>
-                        </div>
-
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div
-                                id="barJualSedang"
-                                class="bg-yellow-500 h-3 rounded-full transition-all duration-700"
-                                style="width:0%">
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <div>
-
-                        <div class="flex justify-between mb-1">
-                            <span>Tinggi</span>
-                            <span id="jualTinggi"></span>
-                        </div>
-
-                        <div class="w-full bg-gray-200 rounded-full h-3">
-                            <div
-                                id="barJualTinggi"
-                                class="bg-red-500 h-3 rounded-full transition-all duration-700"
-                                style="width:0%">
-                            </div>
-                        </div>
+                    <div
+                        id="ruleContainer"
+                        class="grid grid-cols-1 md:grid-cols-2 gap-3">
 
                     </div>
 
                 </div>
 
                 {{-- Kesimpulan --}}
-                <div
-                    class="bg-yellow-50 border-l-4 border-yellow-400 rounded-lg p-5">
+                <div class="bg-yellow-50 border-l-4 border-yellow-400 rounded-xl p-5">
 
                     <h3 class="font-bold mb-3">
 
@@ -221,18 +319,17 @@
 
                     </h3>
 
-                    <div class="bg-gray-100 rounded-xl p-4 mb-4">
+                    <div class="bg-white rounded-lg p-4 mb-4">
 
-                        <h4 class="font-bold text-blue-700 mb-2">
+                        <h4 class="font-semibold text-blue-700 mb-2">
 
-                            Rule Fuzzy Aktif
+                            Rule Dominan
 
                         </h4>
 
                         <pre
                             id="ruleAI"
-                            class="text-sm whitespace-pre-wrap font-mono text-gray-700">
-                    </pre>
+                            class="text-sm whitespace-pre-wrap font-mono text-gray-700"></pre>
 
                     </div>
 
@@ -247,7 +344,7 @@
             </div>
 
             {{-- Footer --}}
-            <div class="border-t p-5 flex justify-end">
+            <div class="border-t p-4 md:p-5 flex justify-end">
 
                 <button
                     id="btnTutup"
@@ -262,3 +359,5 @@
         </div>
 
     </div>
+
+</div>

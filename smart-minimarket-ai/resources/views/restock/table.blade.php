@@ -27,7 +27,7 @@
                 </th>
 
                 <th class="text-center">
-                    Terjual
+                   Rata Penjualan/Minggu
                 </th>
 
                 <th class="text-center">
@@ -100,7 +100,7 @@
 
                 <td class="text-center">
 
-                    {{ $product->penjualan }}
+                    {{ $product->rata_penjualan }}
 
                 </td>
 
@@ -166,7 +166,7 @@
 
                 <td class="text-center">
 
-                    <button
+                    <button 
                         class="btn-detail bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
                         data-index="{{ $loop->index }}">
 

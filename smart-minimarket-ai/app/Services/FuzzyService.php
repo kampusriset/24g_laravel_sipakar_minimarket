@@ -4,160 +4,349 @@ namespace App\Services;
 
 class FuzzyService
 {
-    public function calculate($stock, $minimumStock, $penjualan)
-    {
-        /*
-        ============================================
-        FUZZIFIKASI STOCK
-        ============================================
-        */
+    public function calculate(
+        $stock,
+        $minimumStock,
+        $rataPenjualan,
+        $leadTime
+    ) {
 
-        $stockSedikit = 0;
-        $stockSedang  = 0;
-        $stockBanyak  = 0;
+        // 1. Fuzzifikasi
+        $stockMembership = $this->fuzzifyStock(
+            $stock,
+            $minimumStock
+        );
 
-        if ($stock <= $minimumStock) {
+        $salesMembership = $this->fuzzifySales(
+            $rataPenjualan
+        );
 
-            $stockSedikit = 1;
+        $leadMembership = $this->fuzzifyLeadTime(
+            $leadTime
+        );
 
-        } elseif ($stock <= ($minimumStock * 2)) {
+        // 2. Inferensi
+        $rules = $this->inference(
+            $stockMembership,
+            $salesMembership,
+            $leadMembership
+        );
 
-            $stockSedikit =
-                (($minimumStock * 2) - $stock) / $minimumStock;
+        // 3. Defuzzifikasi
+        $score = $this->defuzzification($rules);
 
-            $stockSedang =
-                ($stock - $minimumStock) / $minimumStock;
-
-        } else {
-
-            $stockBanyak = 1;
-
-        }
-
-        /*
-        ============================================
-        FUZZIFIKASI PENJUALAN
-        ============================================
-        */
-
-        $jualRendah = 0;
-        $jualSedang = 0;
-        $jualTinggi = 0;
-
-        if ($penjualan <= 10) {
-
-            $jualRendah = 1;
-
-        } elseif ($penjualan <= 30) {
-
-            $jualRendah =
-                (30 - $penjualan) / 20;
-
-            $jualSedang =
-                ($penjualan - 10) / 20;
-
-        } else {
-
-            $jualTinggi = 1;
-
-        }
-
-        /*
-        ============================================
-        INFERENSI (RULE)
-        ============================================
-        */
-
-        $r1 = min($stockSedikit, $jualTinggi); // Restock
-        $r2 = min($stockSedikit, $jualSedang); // Restock
-        $r3 = min($stockSedang, $jualTinggi);  // Pantau
-        $r4 = min($stockSedang, $jualSedang);  // Pantau
-        $r5 = min($stockBanyak, $jualRendah);  // Aman
-
-        /*
-        ============================================
-        DEFUZZIFIKASI
-        ============================================
-        */
-
-        $atas =
-            ($r1 * 100) +
-            ($r2 * 90) +
-            ($r3 * 60) +
-            ($r4 * 50) +
-            ($r5 * 20);
-
-        $bawah =
-            $r1 +
-            $r2 +
-            $r3 +
-            $r4 +
-            $r5;
-
-        $score = $bawah == 0 ? 0 : $atas / $bawah;
-
-        /*
-        ============================================
-        STATUS
-        ============================================
-        */
-
-        if ($score >= 80) {
-
-            $status = "Segera Restock";
-
-        } elseif ($score >= 50) {
-
-            $status = "Perlu Dipantau";
-
-        } else {
-
-            $status = "Stock Aman";
-
-        }
-
-        /*
-        ============================================
-        RETURN
-        ============================================
-        */
+        // 4. Status
+        $status = $this->determineStatus($score);
 
         return [
 
-            "score" => round($score, 2),
+            'score' => round($score, 2),
 
-            "status" => $status,
+            'status' => $status,
 
-            "membership" => [
+            'membership' => [
 
-                "stock" => [
+                'stock' => $stockMembership,
 
-                    "sedikit" => round($stockSedikit, 2),
-                    "sedang"  => round($stockSedang, 2),
-                    "banyak"  => round($stockBanyak, 2)
+                'penjualan' => $salesMembership,
 
-                ],
-
-                "penjualan" => [
-
-                    "rendah" => round($jualRendah, 2),
-                    "sedang" => round($jualSedang, 2),
-                    "tinggi" => round($jualTinggi, 2)
-
-                ]
+                'leadTime' => $leadMembership
 
             ],
 
-            "rule" => [
-
-                "R1" => round($r1,2),
-                "R2" => round($r2,2),
-                "R3" => round($r3,2),
-                "R4" => round($r4,2),
-                "R5" => round($r5,2),
-
-            ]
+            'rule' => $rules
 
         ];
+    }
+
+    /*
+    ===================================================
+    Membership Stock
+    ===================================================
+    */
+
+    private function fuzzifyStock($stock, $minimum)
+    {
+        $sedikit = 0;
+        $sedang = 0;
+        $banyak = 0;
+
+        $batas1 = $minimum;
+        $batas2 = $minimum * 2;
+        $batas3 = $minimum * 3;
+
+        // Sedikit
+        if ($stock <= $batas1) {
+
+            $sedikit = 1;
+        } elseif ($stock > $batas1 && $stock < $batas2) {
+
+            $sedikit = ($batas2 - $stock) / ($batas2 - $batas1);
+        }
+
+        // Sedang
+        if ($stock >= $batas1 && $stock <= $batas2) {
+
+            $sedang = ($stock - $batas1) / ($batas2 - $batas1);
+        } elseif ($stock > $batas2 && $stock <= $batas3) {
+
+            $sedang = ($batas3 - $stock) / ($batas3 - $batas2);
+        }
+
+        // Banyak
+        if ($stock >= $batas3) {
+
+            $banyak = 1;
+        } elseif ($stock > $batas2 && $stock < $batas3) {
+
+            $banyak = ($stock - $batas2) / ($batas3 - $batas2);
+        }
+
+        return [
+
+            'sedikit' => round(max(0, $sedikit), 2),
+            'sedang' => round(max(0, $sedang), 2),
+            'banyak' => round(max(0, $banyak), 2)
+
+        ];
+    }
+
+    /*
+    ===================================================
+    Membership Penjualan
+    ===================================================
+    */
+
+    private function fuzzifySales($penjualan)
+    {
+        $rendah = 0;
+        $sedang = 0;
+        $tinggi = 0;
+
+        // Rendah
+        if ($penjualan <= 10) {
+
+            $rendah = 1;
+        } elseif ($penjualan < 25) {
+
+            $rendah = (25 - $penjualan) / 15;
+        }
+
+        // Sedang
+        if ($penjualan >= 10 && $penjualan <= 25) {
+
+            $sedang = ($penjualan - 10) / 15;
+        } elseif ($penjualan > 25 && $penjualan <= 40) {
+
+            $sedang = (40 - $penjualan) / 15;
+        }
+
+        // Tinggi
+        if ($penjualan >= 40) {
+
+            $tinggi = 1;
+        } elseif ($penjualan > 25 && $penjualan < 40) {
+
+            $tinggi = ($penjualan - 25) / 15;
+        }
+
+        return [
+
+            'rendah' => round(max(0, $rendah), 2),
+            'sedang' => round(max(0, $sedang), 2),
+            'tinggi' => round(max(0, $tinggi), 2)
+
+        ];
+    }
+
+    /*
+    ===================================================
+    Membership Lead Time
+    ===================================================
+    */
+
+    private function fuzzifyLeadTime($leadTime)
+    {
+        $cepat = 0;
+        $sedang = 0;
+        $lama = 0;
+
+        // Cepat
+        if ($leadTime <= 2) {
+            $cepat = 1;
+        } elseif ($leadTime < 5) {
+            $cepat = (5 - $leadTime) / 3;
+        }
+
+        // Sedang
+        if ($leadTime >= 2 && $leadTime <= 5) {
+
+            $sedang = ($leadTime - 2) / 3;
+        } elseif ($leadTime > 5 && $leadTime <= 8) {
+
+            $sedang = (8 - $leadTime) / 3;
+        }
+
+        // Lama
+        if ($leadTime >= 8) {
+
+            $lama = 1;
+        } elseif ($leadTime > 5 && $leadTime < 8) {
+
+            $lama = ($leadTime - 5) / 3;
+        }
+
+        return [
+
+            'cepat' => round(max(0, $cepat), 2),
+            'sedang' => round(max(0, $sedang), 2),
+            'lama' => round(max(0, $lama), 2)
+
+        ];
+    }
+
+    /*
+    ===================================================
+    Inferensi
+    ===================================================
+    */
+
+    private function inference($stock, $sales, $lead)
+    {
+        /*
+    ============================================
+    OUTPUT CRISP
+    ============================================
+    */
+
+        $output = [
+
+            'Aman' => 20,
+            'Pantau' => 60,
+            'Restock' => 100
+
+        ];
+
+        /*
+    ============================================
+    RULE BASE
+    ============================================
+    */
+
+        $ruleBase = [
+
+            // STOCK SEDIKIT
+            ['sedikit', 'tinggi', 'lama', 'Restock'],
+            ['sedikit', 'tinggi', 'sedang', 'Restock'],
+            ['sedikit', 'tinggi', 'cepat', 'Restock'],
+
+            ['sedikit', 'sedang', 'lama', 'Restock'],
+            ['sedikit', 'sedang', 'sedang', 'Restock'],
+            ['sedikit', 'sedang', 'cepat', 'Pantau'],
+
+            ['sedikit', 'rendah', 'lama', 'Pantau'],
+            ['sedikit', 'rendah', 'sedang', 'Pantau'],
+            ['sedikit', 'rendah', 'cepat', 'Pantau'],
+
+            // STOCK SEDANG
+            ['sedang', 'tinggi', 'lama', 'Restock'],
+            ['sedang', 'tinggi', 'sedang', 'Pantau'],
+            ['sedang', 'tinggi', 'cepat', 'Pantau'],
+
+            ['sedang', 'sedang', 'lama', 'Pantau'],
+            ['sedang', 'sedang', 'sedang', 'Pantau'],
+            ['sedang', 'sedang', 'cepat', 'Aman'],
+
+            ['sedang', 'rendah', 'lama', 'Pantau'],
+            ['sedang', 'rendah', 'sedang', 'Aman'],
+            ['sedang', 'rendah', 'cepat', 'Aman'],
+
+            // STOCK BANYAK
+            ['banyak', 'tinggi', 'lama', 'Pantau'],
+            ['banyak', 'tinggi', 'sedang', 'Pantau'],
+            ['banyak', 'tinggi', 'cepat', 'Aman'],
+
+            ['banyak', 'sedang', 'lama', 'Aman'],
+            ['banyak', 'sedang', 'sedang', 'Aman'],
+            ['banyak', 'sedang', 'cepat', 'Aman'],
+
+            ['banyak', 'rendah', 'lama', 'Aman'],
+            ['banyak', 'rendah', 'sedang', 'Aman'],
+            ['banyak', 'rendah', 'cepat', 'Aman'],
+
+        ];
+
+        /*
+    ============================================
+    INFERENSI MIN
+    ============================================
+    */
+
+        $rules = [];
+
+        foreach ($ruleBase as $index => $rule) {
+
+            [$stok, $jual, $leadtime, $hasil] = $rule;
+            $alpha = min(
+                $stock[$stok],
+                $sales[$jual],
+                $lead[$leadtime]
+            );
+
+            $rules[] = [
+
+                'nama' => 'R' . ($index + 1),
+                'stock' => $stok,
+                'penjualan' => $jual,
+                'leadTime' => $leadtime,
+                'alpha' => round($alpha, 2),
+                'status' => $hasil,
+                'z' => $output[$hasil]
+
+            ];
+        }
+
+        return $rules;
+    }
+
+    /*
+    ===================================================
+    Defuzzifikasi
+    ===================================================
+    */
+
+    private function defuzzification($rules)
+    {
+        $atas = 0;
+        $bawah = 0;
+
+        foreach ($rules as $rule) {
+            $atas += $rule['alpha'] * $rule['z'];
+            $bawah += $rule['alpha'];
+        }
+
+        if ($bawah == 0) {
+            return 0;
+        }
+        return $atas / $bawah;
+    }
+
+    /*
+    ===================================================
+    Status
+    ===================================================
+    */
+
+    private function determineStatus($score)
+    {
+        if ($score >= 80) {
+            return "Segera Restock";
+        }
+
+        if ($score >= 50) {
+            return "Perlu Dipantau";
+        }
+
+        return "Stock Aman";
     }
 }

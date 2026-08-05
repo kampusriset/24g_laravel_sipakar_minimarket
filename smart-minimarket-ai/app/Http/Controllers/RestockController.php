@@ -18,7 +18,7 @@ class RestockController extends Controller
 
     public function index()
     {
-        $products = Product::with('category')
+        $products = Product::with(['category', 'supplier'])
             ->orderBy('nama_produk')
             ->get();
 
@@ -26,65 +26,21 @@ class RestockController extends Controller
 
         foreach ($products as $product) {
 
-            $penjualan = SaleDetail::where('product_id', $product->id)
-                ->sum('qty');
+            $rataPenjualan = SaleDetail::where('product_id', $product->id)
+                ->selectRaw('SUM(qty) / 4 as rata')
+                ->value('rata') ?? 0;
 
             $hasil = $this->fuzzy->calculate(
-                $product->stock,
-                $product->minimum_stock,
-                $penjualan
+
+                stock: $product->stock,
+                minimumStock: $product->minimum_stock,
+                rataPenjualan: round($rataPenjualan, 2),
+                leadTime: $product->supplier->lead_time_supplier
             );
-            // ==========================
-            // Menentukan Rule Fuzzy
-            // ==========================
 
-            $rule = '';
-
-            if (
-                $hasil['membership']['stock']['sedikit'] >= max(
-                    $hasil['membership']['stock']['sedang'],
-                    $hasil['membership']['stock']['banyak']
-                )
-            ) {
-
-                $stockRule = 'Stock Sedikit';
-            } elseif (
-                $hasil['membership']['stock']['sedang'] >=
-                $hasil['membership']['stock']['banyak']
-            ) {
-
-                $stockRule = 'Stock Sedang';
-            } else {
-
-                $stockRule = 'Stock Banyak';
-            }
-
-            if (
-                $hasil['membership']['penjualan']['tinggi'] >= max(
-                    $hasil['membership']['penjualan']['sedang'],
-                    $hasil['membership']['penjualan']['rendah']
-                )
-            ) {
-
-                $jualRule = 'Penjualan Tinggi';
-            } elseif (
-                $hasil['membership']['penjualan']['sedang'] >=
-                $hasil['membership']['penjualan']['rendah']
-            ) {
-
-                $jualRule = 'Penjualan Sedang';
-            } else {
-
-                $jualRule = 'Penjualan Rendah';
-            }
-
-            $rule =
-                "IF {$stockRule}
-AND {$jualRule}
-THEN {$hasil['status']}";
 
             // Tambahkan data ke object product
-            $product->penjualan = $penjualan;
+            $product->rata_penjualan = round($rataPenjualan,2);
             $product->score = $hasil['score'];
             $product->status = $hasil['status'];
             $product->membership = $hasil['membership'];
@@ -97,12 +53,12 @@ THEN {$hasil['status']}";
 
                 'stock' => $product->stock,
                 'minimum' => $product->minimum_stock,
-                'penjualan' => $penjualan,
-
+                'rataPenjualan' => round($rataPenjualan,2),
                 'score' => $hasil['score'],
                 'status' => $hasil['status'],
 
-                'rule' => $rule,
+                'leadTime' => $product->supplier->lead_time_supplier,
+                'rule' => $hasil['rule'],
 
                 'stockSedikit' => $hasil['membership']['stock']['sedikit'],
                 'stockSedang' => $hasil['membership']['stock']['sedang'],
@@ -110,8 +66,11 @@ THEN {$hasil['status']}";
 
                 'jualRendah' => $hasil['membership']['penjualan']['rendah'],
                 'jualSedang' => $hasil['membership']['penjualan']['sedang'],
-                'jualTinggi' => $hasil['membership']['penjualan']['tinggi']
+                'jualTinggi' => $hasil['membership']['penjualan']['tinggi'],
 
+                'leadCepat'  => $hasil['membership']['leadTime']['cepat'],
+                'leadSedang' => $hasil['membership']['leadTime']['sedang'],
+                'leadLama'   => $hasil['membership']['leadTime']['lama']
             ];
         }
 

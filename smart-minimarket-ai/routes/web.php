@@ -6,14 +6,13 @@ use App\Http\Controllers\RestockController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [RestockController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/kasir/history', [KasirController::class, 'history'])->name('kasir.history');
@@ -40,7 +39,6 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-use App\Http\Controllers\DashboardController;
 
 Route::middleware(['auth'])->group(function () {
 

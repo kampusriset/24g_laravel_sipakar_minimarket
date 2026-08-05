@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="max-w-7xl mx-auto py-8">
+<div class="max-w-7xl mx-auto py-8 container" >
 
     <h1 class="text-3xl font-bold mb-6">
         AI Rekomendasi Restock
