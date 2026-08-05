@@ -6,13 +6,15 @@ class FuzzyService
 {
     public function calculate($stock, $minimumStock, $penjualan)
     {
-        // ===========================
-        // MEMBERSHIP STOCK
-        // ===========================
+        /*
+        ============================================
+        FUZZIFIKASI STOCK
+        ============================================
+        */
 
         $stockSedikit = 0;
-        $stockSedang = 0;
-        $stockBanyak = 0;
+        $stockSedang  = 0;
+        $stockBanyak  = 0;
 
         if ($stock <= $minimumStock) {
 
@@ -21,12 +23,10 @@ class FuzzyService
         } elseif ($stock <= ($minimumStock * 2)) {
 
             $stockSedikit =
-                (($minimumStock * 2) - $stock)
-                / $minimumStock;
+                (($minimumStock * 2) - $stock) / $minimumStock;
 
             $stockSedang =
-                ($stock - $minimumStock)
-                / $minimumStock;
+                ($stock - $minimumStock) / $minimumStock;
 
         } else {
 
@@ -34,9 +34,11 @@ class FuzzyService
 
         }
 
-        // ===========================
-        // MEMBERSHIP PENJUALAN
-        // ===========================
+        /*
+        ============================================
+        FUZZIFIKASI PENJUALAN
+        ============================================
+        */
 
         $jualRendah = 0;
         $jualSedang = 0;
@@ -48,13 +50,11 @@ class FuzzyService
 
         } elseif ($penjualan <= 30) {
 
-            $jualSedang =
-                ($penjualan - 10)
-                / 20;
-
             $jualRendah =
-                (30 - $penjualan)
-                / 20;
+                (30 - $penjualan) / 20;
+
+            $jualSedang =
+                ($penjualan - 10) / 20;
 
         } else {
 
@@ -62,17 +62,45 @@ class FuzzyService
 
         }
 
-        // ===========================
-        // SCORE
-        // ===========================
+        /*
+        ============================================
+        INFERENSI (RULE)
+        ============================================
+        */
 
-        $score =
-            (($stockSedikit * 60) +
-            ($stockSedang * 35) +
-            ($stockBanyak * 5))
-            +
-            (($jualTinggi * 40) +
-            ($jualSedang * 20));
+        $r1 = min($stockSedikit, $jualTinggi); // Restock
+        $r2 = min($stockSedikit, $jualSedang); // Restock
+        $r3 = min($stockSedang, $jualTinggi);  // Pantau
+        $r4 = min($stockSedang, $jualSedang);  // Pantau
+        $r5 = min($stockBanyak, $jualRendah);  // Aman
+
+        /*
+        ============================================
+        DEFUZZIFIKASI
+        ============================================
+        */
+
+        $atas =
+            ($r1 * 100) +
+            ($r2 * 90) +
+            ($r3 * 60) +
+            ($r4 * 50) +
+            ($r5 * 20);
+
+        $bawah =
+            $r1 +
+            $r2 +
+            $r3 +
+            $r4 +
+            $r5;
+
+        $score = $bawah == 0 ? 0 : $atas / $bawah;
+
+        /*
+        ============================================
+        STATUS
+        ============================================
+        */
 
         if ($score >= 80) {
 
@@ -88,9 +116,15 @@ class FuzzyService
 
         }
 
+        /*
+        ============================================
+        RETURN
+        ============================================
+        */
+
         return [
 
-            "score" => round($score,2),
+            "score" => round($score, 2),
 
             "status" => $status,
 
@@ -98,23 +132,29 @@ class FuzzyService
 
                 "stock" => [
 
-                    "sedikit" => round($stockSedikit,2),
-
-                    "sedang" => round($stockSedang,2),
-
-                    "banyak" => round($stockBanyak,2)
+                    "sedikit" => round($stockSedikit, 2),
+                    "sedang"  => round($stockSedang, 2),
+                    "banyak"  => round($stockBanyak, 2)
 
                 ],
 
                 "penjualan" => [
 
-                    "rendah" => round($jualRendah,2),
-
-                    "sedang" => round($jualSedang,2),
-
-                    "tinggi" => round($jualTinggi,2)
+                    "rendah" => round($jualRendah, 2),
+                    "sedang" => round($jualSedang, 2),
+                    "tinggi" => round($jualTinggi, 2)
 
                 ]
+
+            ],
+
+            "rule" => [
+
+                "R1" => round($r1,2),
+                "R2" => round($r2,2),
+                "R3" => round($r3,2),
+                "R4" => round($r4,2),
+                "R5" => round($r5,2),
 
             ]
 

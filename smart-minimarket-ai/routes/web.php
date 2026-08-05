@@ -1,10 +1,8 @@
 <?php
 
 use App\Http\Controllers\HistoryController;
-use App\Http\Controllers\HistoryController as ControllersHistoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RestockController;
-
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\ProductController;

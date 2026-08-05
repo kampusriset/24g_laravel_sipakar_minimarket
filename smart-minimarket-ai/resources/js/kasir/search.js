@@ -5,138 +5,128 @@
 const search = document.getElementById("searchProduct");
 const result = document.getElementById("searchResult");
 
-// ==========================================
-// SEARCH PRODUK
-// ==========================================
+// Jika bukan halaman kasir, hentikan script
+if (!search || !result) {
+    console.log("Search.js dilewati (bukan halaman kasir)");
+} else {
 
-search.addEventListener("keyup", async function () {
+    // ==========================================
+    // SEARCH PRODUK
+    // ==========================================
 
-    const keyword = this.value.trim();
+    search.addEventListener("keyup", async function () {
 
-    if (keyword.length < 2) {
+        const keyword = this.value.trim();
 
-        result.innerHTML = "";
-        result.classList.add("hidden");
+        if (keyword.length < 2) {
 
-        return;
-
-    }
-
-    try {
-
-        const response = await fetch(
-            "/products/search?q=" + encodeURIComponent(keyword)
-        );
-
-        const products = await response.json();
-
-        result.innerHTML = "";
-
-        if (products.length === 0) {
-
-            result.innerHTML = `
-                <div class="p-4 text-center text-gray-400">
-                    Produk tidak ditemukan
-                </div>
-            `;
-
-            result.classList.remove("hidden");
-
+            result.innerHTML = "";
+            result.classList.add("hidden");
             return;
 
         }
 
-        products.forEach(product => {
+        try {
 
-            result.innerHTML += `
+            const response = await fetch(
+                "/products/search?q=" + encodeURIComponent(keyword)
+            );
 
-                <div
-                    class="product-item p-4 border-b hover:bg-yellow-50 cursor-pointer transition"
+            const products = await response.json();
 
-                    data-id="${product.id}"
-                    data-name="${product.nama_produk}"
-                    data-price="${product.harga_jual}"
-                    data-stock="${product.stock}"
-                >
+            result.innerHTML = "";
 
-                    <div class="font-semibold">
-                        ${product.nama_produk}
+            if (products.length === 0) {
+
+                result.innerHTML = `
+                    <div class="p-4 text-center text-gray-400">
+                        Produk tidak ditemukan
                     </div>
+                `;
 
-                    <div class="text-sm text-gray-500">
+                result.classList.remove("hidden");
+                return;
+            }
 
-                        ${product.kode_produk}
+            products.forEach(product => {
 
-                        •
+                result.innerHTML += `
+                    <div
+                        class="product-item p-4 border-b hover:bg-yellow-50 cursor-pointer transition"
+                        data-id="${product.id}"
+                        data-name="${product.nama_produk}"
+                        data-price="${product.harga_jual}"
+                        data-stock="${product.stock}">
 
-                        Rp ${Number(product.harga_jual).toLocaleString("id-ID")}
+                        <div class="font-semibold">
+                            ${product.nama_produk}
+                        </div>
+
+                        <div class="text-sm text-gray-500">
+                            ${product.kode_produk}
+                            •
+                            Rp ${Number(product.harga_jual).toLocaleString("id-ID")}
+                        </div>
+
+                        <div class="text-xs text-gray-400 mt-1">
+                            Stock : ${product.stock}
+                        </div>
 
                     </div>
+                `;
 
-                    <div class="text-xs text-gray-400 mt-1">
+            });
 
-                        Stock : ${product.stock}
+            result.classList.remove("hidden");
 
-                    </div>
+        } catch (error) {
 
-                </div>
+            console.error(error);
 
-            `;
-
-        });
-
-        result.classList.remove("hidden");
-
-    }
-
-    catch (error) {
-
-        console.error(error);
-
-    }
-
-});
-
-// ==========================================
-// PILIH PRODUK
-// ==========================================
-
-result.addEventListener("click", function (e) {
-
-    const item = e.target.closest(".product-item");
-
-    if (!item) return;
-
-    window.addToCart({
-
-        id: Number(item.dataset.id),
-        nama: item.dataset.name,
-        harga: Number(item.dataset.price),
-        stock: Number(item.dataset.stock)
+        }
 
     });
 
-    search.value = "";
+    // ==========================================
+    // PILIH PRODUK
+    // ==========================================
 
-    result.innerHTML = "";
+    result.addEventListener("click", function (e) {
 
-    result.classList.add("hidden");
+        const item = e.target.closest(".product-item");
 
-});
+        if (!item) return;
 
-// ==========================================
-// TUTUP DROPDOWN
-// ==========================================
+        window.addToCart({
 
-document.addEventListener("click", function (e) {
+            id: Number(item.dataset.id),
+            nama: item.dataset.name,
+            harga: Number(item.dataset.price),
+            stock: Number(item.dataset.stock)
 
-    if (
-        !search.contains(e.target) &&
-        !result.contains(e.target)
-    ) {
+        });
 
+        search.value = "";
+        result.innerHTML = "";
         result.classList.add("hidden");
 
-    }
+    });
 
-});
+    // ==========================================
+    // TUTUP DROPDOWN
+    // ==========================================
+
+    document.addEventListener("click", function (e) {
+
+        if (
+            !search.contains(e.target) &&
+            !result.contains(e.target)
+        ) {
+
+            result.classList.add("hidden");
+
+        }
+
+    });
+
+}

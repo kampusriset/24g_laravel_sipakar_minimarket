@@ -214,4 +214,5 @@
 
 </div>
 
+@vite('resources/js/kasir.js')
 @endsection
