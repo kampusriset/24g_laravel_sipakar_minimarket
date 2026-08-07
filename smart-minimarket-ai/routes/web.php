@@ -12,15 +12,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', [RestockController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/kasir/history', [KasirController::class, 'history'])->name('kasir.history');
     Route::get('/kasir/history/{sale}', [KasirController::class, 'detail'])->name('kasir.detail');
 });
 
-Route::get('/restock-ai', [RestockController::class, 'index'])
-    ->name('restock.ai');
+Route::get('/restock', [RestockController::class, 'index'])
+    ->name('restock.index');
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/history', [HistoryController::class, 'index'])

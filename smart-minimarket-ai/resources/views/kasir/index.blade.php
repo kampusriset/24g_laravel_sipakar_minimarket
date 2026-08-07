@@ -43,9 +43,6 @@
 
             <div class="flex items-center gap-5">
 
-                <button class="text-2xl">
-                    🛒
-                </button>
 
                 <div class="font-semibold">
 
@@ -54,8 +51,29 @@
                 </div>
 
             </div>
+            <div class="flex justify-end mb-4">
+
+                <a href="{{ route('restock.index') }}"
+                    class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl shadow transition">
+
+                    Restock AI
+
+                </a>
+
+            </div>
+            <div class="flex justify-end mb-4">
+
+                <a href="{{ route('dashboard') }}"
+                    class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl shadow transition">
+
+                    Dashboard
+
+                </a>
+
+            </div>
 
         </div>
+
 
     </nav>
 
