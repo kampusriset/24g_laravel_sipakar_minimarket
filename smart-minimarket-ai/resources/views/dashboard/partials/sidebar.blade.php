@@ -7,7 +7,7 @@
         </h1>
 
     </div>
-    
+
 
     {{-- ================= MENU ================= --}}
     <nav class="flex-1 px-5">
@@ -112,23 +112,6 @@
 
                 <span>
                     Produk
-                </span>
-
-            </a>
-
-
-            {{-- Kategori --}}
-            <a href="{{ url('/kategori') }}"
-                class="flex items-center gap-3 px-2 py-2 rounded-lg
-                text-sm text-gray-800
-                hover:bg-yellow-100 transition">
-
-                <span class="w-4 text-gray-400">
-                    ▦
-                </span>
-
-                <span>
-                    Kategori
                 </span>
 
             </a>
