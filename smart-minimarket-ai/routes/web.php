@@ -31,7 +31,4 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/restock', [RestockController::class, 'index'])->name('restock.index');
 });
 
-Route::get('/products', [ProductController::class, 'index'])
-    ->name('products.index');
-
 require __DIR__ . '/auth.php';

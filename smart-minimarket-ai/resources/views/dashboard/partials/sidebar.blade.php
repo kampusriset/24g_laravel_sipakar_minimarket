@@ -7,7 +7,7 @@
         </h1>
 
     </div>
-
+    
 
     {{-- ================= MENU ================= --}}
     <nav class="flex-1 px-5">
@@ -101,7 +101,7 @@
 
 
             {{-- Produk --}}
-            <a href="{{ url('/produk.index') }}"
+            <a href="{{ url('/products') }}"
                 class="flex items-center gap-3 px-2 py-2 rounded-lg
                 text-sm text-gray-800
                 hover:bg-yellow-100 transition">

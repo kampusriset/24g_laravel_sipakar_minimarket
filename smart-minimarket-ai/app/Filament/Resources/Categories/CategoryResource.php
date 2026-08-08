@@ -7,6 +7,7 @@ use App\Filament\Resources\Categories\Pages\EditCategory;
 use App\Filament\Resources\Categories\Pages\ListCategories;
 use App\Models\Category;
 use BackedEnum;
+use Filament\Actions\EditAction as ActionsEditAction;
 use Filament\Resources\Resource;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -73,11 +74,9 @@ class CategoryResource extends Resource
 
             ])
 
-            ->recordActions([
-                EditAction::make()
+            ->recordActions([ActionsEditAction::make()
                     ->label('Edit')
-                    ->icon('heroicon-o-pencil'),
-            ])
+                    ->icon('heroicon-o-pencil')])
 
             ->defaultSort(
                 'nama_kategori',

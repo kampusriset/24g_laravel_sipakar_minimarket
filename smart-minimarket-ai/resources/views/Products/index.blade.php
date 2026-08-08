@@ -2,23 +2,7 @@
 
 @section('dashboard-content')
 
-<div class="min-h-screen bg-gray-100 p-8">
-
-    {{-- HEADER --}}
-    <div class="flex justify-between items-center mb-8">
-
-        <div>
-            <h1 class="text-3xl font-bold text-gray-800">
-                Produk
-            </h1>
-
-            <p class="text-gray-500 mt-1">
-                Daftar produk dan informasi stock
-            </p>
-        </div>
-
-    </div>
-
+<div class="min-h-screen bg-[#f8f0e5]" p-8">
 
     {{-- STATISTIC CARDS --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
