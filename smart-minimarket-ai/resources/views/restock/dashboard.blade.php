@@ -1,3 +1,12 @@
+@extends('layouts.dashboard')
+
+@section('title', 'Smart Restock AI')
+
+@section('page-title', 'Smart Restock AI')
+
+@section('page-description', 'Analisis dan rekomendasi stok produk')
+
+
 {{-- Dashboard AI Restock --}}
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
 
@@ -98,4 +107,4 @@
 
     <canvas id="priorityChart"></canvas>
 
-    
+    @endsection 

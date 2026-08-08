@@ -1,6 +1,12 @@
-@extends('layouts.kasir')
+@extends('layouts.dashboard')
 
-@section('content')
+@section('title', 'Transaksi')
+
+@section('page-title', 'Transaksi')
+
+@section('page-description', 'Kelola transaksi penjualan')
+
+@section('dashboard-content')
 
 <div class="min-h-screen bg-gray-100">
 

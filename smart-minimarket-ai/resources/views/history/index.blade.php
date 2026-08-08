@@ -1,6 +1,7 @@
-@extends('layouts.kasir')
+@extends('layouts.dashboard')
 
 @section('content')
+@section('title', 'Smart Restock AI')
 
 <div class="max-w-7xl mx-auto py-8 px-6">
 

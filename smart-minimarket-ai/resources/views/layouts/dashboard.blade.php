@@ -5,37 +5,47 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
-        @yield('title', 'Dashboard - MartIn')
+        @yield('title', 'MartIn')
     </title>
 
-    {{-- CSS & JS --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
 
 <body class="bg-[#f7f1e8] text-gray-800">
 
-    <div class="min-h-screen flex">
+    <div class="min-h-screen">
 
-        {{-- SIDEBAR --}}
-        @include('dashboard.partials.sidebar')
+        {{-- SIDEBAR TETAP --}}
+        <aside class="fixed left-0 top-0 w-64 h-screen z-40">
 
+            @include('dashboard.partials.sidebar')
 
-        {{-- AREA KONTEN --}}
-        <div class="flex-1 min-w-0 flex flex-col">
-
-            {{-- NAVBAR --}}
-            @include('dashboard.partials.navbar')
+        </aside>
 
 
-            {{-- CONTENT --}}
-            <main class="flex-1 p-4 sm:p-6 lg:p-8">
+        {{-- AREA KANAN --}}
+        <div class="ml-64 min-h-screen">
 
-                @yield('dashboard-content')
+            {{-- NAVBAR TETAP DI ATAS --}}
+            <header class="fixed top-0 right-0 left-64 h-20 z-30">
+
+                @include('dashboard.partials.navbar')
+
+            </header>
+
+
+            {{-- ISI HALAMAN --}}
+            <main class="pt-20 min-h-screen">
+
+                <div class="p-8">
+
+                    @yield('dashboard-content')
+
+                </div>
 
             </main>
 
@@ -43,8 +53,6 @@
 
     </div>
 
-
-    {{-- SCRIPT --}}
     @stack('scripts')
 
 </body>

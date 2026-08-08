@@ -1,6 +1,8 @@
-@extends('layouts.kasir')
-
-@section('content')
+@extends('layouts.dashboard')
+@section('title', 'Smart Restock AI')
+@section('page-title', 'Smart Restock AI')
+@section('page-description', 'Analisis dan rekomendasi stok produk')
+@section('dashboard-content')
 
 <div class="max-w-7xl mx-auto py-8 container">
 
@@ -72,5 +74,3 @@
 </div>
 
 @vite('resources/js/restock.js')
-
-@endsection
