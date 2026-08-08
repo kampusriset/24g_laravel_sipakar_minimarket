@@ -2,10 +2,8 @@
 
 namespace App\Filament\Resources\Products\Schemas;
 
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
 
 class ProductForm
@@ -15,52 +13,34 @@ class ProductForm
         return $schema
             ->components([
                 TextInput::make('kode_produk')
-                    ->required()
-                    ->maxLength(50),
-
+                    ->required(),
                 TextInput::make('nama_produk')
+                    ->required(),
+                TextInput::make('kategori_id')
                     ->required()
-                    ->maxLength(255),
-
-                Select::make('kategori_id')
-                    ->relationship('category', 'nama_kategori')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-
-                Select::make('supplier_id')
-                    ->relationship('supplier', 'nama_supplier')
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-
-                TextInput::make('harga_beli')
-                    ->numeric()
-                    ->prefix('Rp')
-                    ->required(),
-
-                TextInput::make('harga_jual')
-                    ->numeric()
-                    ->prefix('Rp')
-                    ->required(),
-
-                TextInput::make('stock')
-                    ->numeric()
-                    ->required(),
-
-                TextInput::make('minimum_stock')
-                    ->numeric()
-                    ->required(),
-
-                TextInput::make('lead_time_supplier')
                     ->numeric(),
-
-                FileUpload::make('gambar')
-                    ->image()
-                    ->directory('produk'),
-
+                TextInput::make('supplier_id')
+                    ->required()
+                    ->numeric(),
+                TextInput::make('harga_beli')
+                    ->required()
+                    ->numeric(),
+                TextInput::make('harga_jual')
+                    ->required()
+                    ->numeric(),
+                TextInput::make('stock')
+                    ->required()
+                    ->numeric(),
+                TextInput::make('minimum_stock')
+                    ->required()
+                    ->numeric(),
+                TextInput::make('rata_penjualan')
+                    ->required()
+                    ->numeric()
+                    ->default(0),
+                TextInput::make('gambar'),
                 Textarea::make('deskripsi')
-                    ->rows(3),
+                    ->columnSpanFull(),
             ]);
     }
 }
