@@ -30,11 +30,11 @@
             <div class="text-right">
 
                 <p class="font-semibold text-sm">
-                    Admin
+                    {{ auth()->user()->name }}
                 </p>
 
                 <p class="text-xs text-gray-500">
-                    Administrator
+                    {{ auth()->user()->role }}
                 </p>
 
             </div>

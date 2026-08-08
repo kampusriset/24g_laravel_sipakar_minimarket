@@ -17,9 +17,6 @@
 
             <div class="flex items-center gap-8">
 
-                <h1 class="text-4xl font-extrabold">
-                    Mart<span class="text-yellow-400">In</span>
-                </h1>
 
                 <select
                     id="kategoriFilter"
@@ -34,9 +31,9 @@
                     <input
                         id="searchProduct"
                         type="text"
-                        placeholder="Cari nama atau kode produk..."
+                        placeholder="Cari nama produk..."
                         autocomplete="off"
-                        class="w-[520px] rounded-lg border px-5 py-2 focus:ring-2 focus:ring-yellow-400 outline-none">
+                        class="w-[720px] rounded-lg border px-5 py-2 focus:ring-2 focus:ring-yellow-400 outline-none">
 
                     <div
                         id="searchResult"
@@ -48,33 +45,6 @@
             </div>
 
             <div class="flex items-center gap-5">
-
-
-                <div class="font-semibold">
-
-                    {{ auth()->user()->name }}
-
-                </div>
-
-            </div>
-            <div class="flex justify-end mb-4">
-
-                <a href="{{ route('restock.index') }}"
-                    class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl shadow transition">
-
-                    Restock AI
-
-                </a>
-
-            </div>
-            <div class="flex justify-end mb-4">
-
-                <a href="{{ route('dashboard') }}"
-                    class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl shadow transition">
-
-                    Dashboard
-
-                </a>
 
             </div>
 
