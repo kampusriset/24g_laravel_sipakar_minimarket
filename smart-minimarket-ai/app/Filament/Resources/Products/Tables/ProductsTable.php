@@ -7,59 +7,137 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use filament\Tables\Filters\Filter;
+use filament\Tables\Filters\SelectFilter;
+use illuminate\Database\Eloquent\Builder;
+
 
 class ProductsTable
 {
-    public static function configure(Table $table): Table
+    public static function table(Table $table): Table
     {
         return $table
             ->columns([
+
+                // KODE PRODUK
                 TextColumn::make('kode_produk')
-                    ->searchable(),
+                    ->label('Kode')
+                    ->searchable()
+                    ->sortable()
+                    ->copyable(),
+
+                // NAMA PRODUK
                 TextColumn::make('nama_produk')
-                    ->searchable(),
-                TextColumn::make('kategori_id')
-                    ->numeric()
+                    ->label('Produk')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold'),
+
+                // KATEGORI
+                TextColumn::make('category.nama_kategori')
+                    ->label('Kategori')
+                    ->badge()
+                    ->searchable()
                     ->sortable(),
-                TextColumn::make('supplier_id')
-                    ->numeric()
+
+                // SUPPLIER
+                TextColumn::make('supplier.nama_supplier')
+                    ->label('Supplier')
+                    ->searchable()
                     ->sortable(),
-                TextColumn::make('harga_beli')
-                    ->numeric()
-                    ->sortable(),
+
+                // HARGA JUAL
                 TextColumn::make('harga_jual')
-                    ->numeric()
+                    ->label('Harga Jual')
+                    ->money('IDR')
                     ->sortable(),
+
+                // STOCK
                 TextColumn::make('stock')
+                    ->label('Stock')
                     ->numeric()
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()
+                    ->color(function ($record) {
+
+                        if ($record->stock <= $record->minimum_stock) {
+                            return 'danger';
+                        }
+
+                        return 'success';
+                    })
+                    ->formatStateUsing(function ($state, $record) {
+
+                        if ($record->stock <= $record->minimum_stock) {
+                            return $state . ' • Menipis';
+                        }
+
+                        return $state . ' • Aman';
+                    }),
+
+                // MINIMUM STOCK
                 TextColumn::make('minimum_stock')
+                    ->label('Minimum')
                     ->numeric()
                     ->sortable(),
+
+                // RATA-RATA PENJUALAN
                 TextColumn::make('rata_penjualan')
+                    ->label('Rata-rata Penjualan')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('gambar')
-                    ->searchable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+
             ])
+
             ->filters([
-                //
+
+                // FILTER KATEGORI
+                SelectFilter::make('kategori_id')
+                    ->label('Kategori')
+                    ->relationship(
+                        'category',
+                        'nama_kategori'
+                    ),
+
+                // FILTER SUPPLIER
+                SelectFilter::make('supplier_id')
+                    ->label('Supplier')
+                    ->relationship(
+                        'supplier',
+                        'nama_supplier'
+                    ),
+
+                // FILTER STOCK MENIPIS
+                Filter::make('stock_menipis')
+                    ->label('Stock Menipis')
+                    ->query(function (Builder $query) {
+
+                        return $query->whereColumn(
+                            'stock',
+                            '<=',
+                            'minimum_stock'
+                        );
+                    }),
+
             ])
+
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()
+                    ->label('Edit')
+                    ->icon('heroicon-o-pencil'),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
+
+            ->defaultSort(
+                'nama_produk',
+                'asc'
+            )
+
+            ->striped()
+
+            ->paginated([
+                10,
+                25,
+                50,
             ]);
     }
 }

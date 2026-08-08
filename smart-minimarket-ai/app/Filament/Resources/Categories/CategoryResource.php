@@ -5,38 +5,97 @@ namespace App\Filament\Resources\Categories;
 use App\Filament\Resources\Categories\Pages\CreateCategory;
 use App\Filament\Resources\Categories\Pages\EditCategory;
 use App\Filament\Resources\Categories\Pages\ListCategories;
-use App\Filament\Resources\Categories\Schemas\CategoryForm;
-use App\Filament\Resources\Categories\Tables\CategoriesTable;
 use App\Models\Category;
 use BackedEnum;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
+use Filament\Forms\Components\TextInput;
+use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\actions\EditAction;
 
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-tag';
 
-    protected static ?string $recordTitleAttribute = 'nama_category';
+    protected static ?string $navigationLabel = 'Kategori';
+
+    protected static ?string $modelLabel = 'Kategori';
+
+    protected static ?string $pluralModelLabel = 'Kategori';
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Data Master';
 
     public static function form(Schema $schema): Schema
     {
-        return CategoryForm::configure($schema);
+        return $schema
+            ->components([
+
+                Section::make('Informasi Kategori')
+                    ->schema([
+
+                        TextInput::make('nama_kategori')
+                            ->label('Nama Kategori')
+                            ->placeholder('Contoh: Makanan, Minuman, Snack')
+                            ->required()
+                            ->maxLength(255),
+
+                    ]),
+
+            ]);
     }
 
     public static function table(Table $table): Table
     {
-        return CategoriesTable::configure($table);
+        return $table
+            ->columns([
+
+                TextColumn::make('nama_kategori')
+                    ->label('Nama Kategori')
+                    ->searchable()
+                    ->sortable()
+                    ->weight('bold'),
+
+                TextColumn::make('products_count')
+                    ->label('Jumlah Produk')
+                    ->counts('products')
+                    ->badge()
+                    ->color('info'),
+
+                TextColumn::make('created_at')
+                    ->label('Dibuat')
+                    ->dateTime('d M Y')
+                    ->sortable(),
+
+            ])
+
+            ->recordActions([
+                EditAction::make()
+                    ->label('Edit')
+                    ->icon('heroicon-o-pencil'),
+            ])
+
+            ->defaultSort(
+                'nama_kategori',
+                'asc'
+            )
+
+            ->striped()
+
+            ->paginated([
+                10,
+                25,
+                50,
+            ]);
     }
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array
