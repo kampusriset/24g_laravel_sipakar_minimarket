@@ -31,4 +31,21 @@ class Restock extends Model
     {
         return $this->belongsTo(Supplier::class);
     }
+
+    protected static function booted(): void
+    {
+        static::created(function (Restock $restock) {
+            $restock->product()->increment(
+                'stock',
+                $restock->jumlah
+            );
+        });
+
+        static::deleted(function (Restock $restock) {
+            $restock->product()->decrement(
+                'stock',
+                $restock->jumlah
+            );
+        });
+    }
 }

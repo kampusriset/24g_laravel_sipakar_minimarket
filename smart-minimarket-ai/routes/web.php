@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\HistoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RestockController;
@@ -41,4 +42,10 @@ Route::middleware(['auth'])->group(function () {
     ->name('laporan.excel');
 });
 
+Route::get('/auth/google', [GoogleController::class, 'redirect'])
+    ->name('google.login');
+
+Route::get('/auth/google/callback', [GoogleController::class, 'callback'])
+    ->name('google.callback');
+    
 require __DIR__ . '/auth.php';
