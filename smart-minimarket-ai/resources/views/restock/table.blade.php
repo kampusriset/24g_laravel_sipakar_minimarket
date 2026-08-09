@@ -27,7 +27,7 @@
                 </th>
 
                 <th class="text-center">
-                   Rata Penjualan/Minggu
+                    Rata Penjualan/Minggu
                 </th>
 
                 <th class="text-center">
@@ -166,14 +166,14 @@
 
                 <td class="text-center">
 
-                    <button 
+                    <button
+                        type="button"
                         class="btn-detail bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition"
-                        data-index="{{ $loop->index }}">
+                        data-index="{{ $index }}">
 
                         Detail AI
 
                     </button>
-
                 </td>
 
             </tr>

@@ -362,11 +362,11 @@
 
                             <button
                                 type="button"
-                                @click="openDetail({{ $index }})"
-                                class="rounded-xl bg-blue-600 px-4 py-2.5
-                                       text-sm font-semibold text-white
-                                       transition hover:bg-blue-700">
+                                class="btn-detail rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
+                                data-index="{{ $index }}">
+
                                 Detail AI
+
                             </button>
 
                         </td>
@@ -888,6 +888,8 @@
 </style>
 
 @endsection
+@vite('resources/js/restock.js')
+@include('restock.modal')
 
 
 <style>

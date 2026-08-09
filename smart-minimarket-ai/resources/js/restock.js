@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (!container) return;
 
-    const fuzzyData = JSON.parse(container.dataset.products || "[]");
+    const fuzzyData = JSON.parse(container.dataset.fuzzy || "[]");  
+
 
     const modal = document.getElementById("detailModal");
     const btnCloseModal = document.getElementById("btnCloseModal");
@@ -16,7 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Tombol Detail AI
     // ===========================
 
-    document.querySelectorAll(".btn-detail").forEach(button => {
+    const buttons = document.querySelectorAll(".btn-detail");
+    buttons.forEach(button => {
 
         button.addEventListener("click", () => {
 
@@ -77,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             document.getElementById("stock").textContent = data.stock;
             document.getElementById("minimum").textContent = data.minimum;
-            document.getElementById("rataPenjualan").textContent = data.rataPenjualan ? data.rataPenjualan + " pcs/minggu": "0 pcs/minggu";
+            document.getElementById("rataPenjualan").textContent = data.rataPenjualan ? data.rataPenjualan + " pcs/minggu" : "0 pcs/minggu";
 
             document.getElementById("score").textContent = data.score;
             document.getElementById("status").textContent = data.status;
