@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
+
 class ProductController extends Controller
 {
     public function index(Request $request)
@@ -57,4 +58,21 @@ class ProductController extends Controller
             'categories'
         ));
     }
+
+    public function search(Request $request)
+{
+    $query = $request->get('q');
+
+
+    $products = Product::with([
+        'category'
+    ])
+    ->where('nama_produk', 'like', "%{$query}%")
+    ->where('stock', '>', 0)
+    ->limit(20)
+    ->get();
+
+
+    return response()->json($products);
+}
 }

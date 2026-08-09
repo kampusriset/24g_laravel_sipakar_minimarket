@@ -53,30 +53,37 @@
 
     </nav>
 
-    <div class="max-w-7xl mx-auto px-8 py-8">
+    <div
+        id="kasir-app"
+        data-products='@json($products)'
+        data-categories='@json($categories)'>
 
-        <div class="grid grid-cols-12 gap-8">
+        <div class="max-w-7xl mx-auto px-8 py-8">
 
-            {{-- ========================= --}}
-            {{-- KERANJANG --}}
-            {{-- ========================= --}}
-            <div class="col-span-8">
+            <div class="grid grid-cols-12 gap-8">
 
-                <h2 class="text-2xl font-bold mb-5">
+                {{-- ========================= --}}
+                {{-- KERANJANG --}}
+                {{-- ========================= --}}
+                <div class="col-span-8">
 
-                    Keranjang Belanja
+                    <h2 class="text-2xl font-bold mb-5">
 
-                </h2>
+                        Keranjang Belanja
 
-                <div class="bg-white rounded-2xl shadow border">
+                    </h2>
 
-                    <div
-                        id="cartContainer"
-                        class="p-6 min-h-[500px]">
+                    <div class="bg-white rounded-2xl shadow border">
 
-                        <div class="text-center text-gray-400 py-32">
+                        <div
+                            id="cartContainer"
+                            class="p-6 min-h-[500px]">
 
-                            Belum ada produk.
+                            <div class="text-center text-gray-400 py-32">
+
+                                Belum ada produk.
+
+                            </div>
 
                         </div>
 
@@ -84,117 +91,117 @@
 
                 </div>
 
-            </div>
+                {{-- ========================= --}}
+                {{-- SIDEBAR --}}
+                {{-- ========================= --}}
+                <div class="col-span-4">
 
-            {{-- ========================= --}}
-            {{-- SIDEBAR --}}
-            {{-- ========================= --}}
-            <div class="col-span-4">
+                    <div class="space-y-5 sticky top-5">
 
-                <div class="space-y-5 sticky top-5">
+                        {{-- Invoice --}}
+                        <div class="bg-white rounded-2xl shadow border p-5">
 
-                    {{-- Invoice --}}
-                    <div class="bg-white rounded-2xl shadow border p-5">
+                            <div class="flex justify-between">
 
-                        <div class="flex justify-between">
+                                <span>No Invoice</span>
 
-                            <span>No Invoice</span>
+                                <span class="font-semibold">
+                                    {{ $invoice }}
+                                </span>
 
-                            <span class="font-semibold">
-                                {{ $invoice }}
-                            </span>
+                            </div>
 
-                        </div>
+                            <div class="flex justify-between mt-4">
 
-                        <div class="flex justify-between mt-4">
+                                <span>Kasir</span>
 
-                            <span>Kasir</span>
+                                <span class="font-semibold">
 
-                            <span class="font-semibold">
+                                    {{ auth()->user()->name }}
 
-                                {{ auth()->user()->name }}
+                                </span>
 
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    {{-- Pembayaran --}}
-                    <div class="bg-white rounded-2xl shadow border p-6">
-
-                        <div class="flex justify-between mb-3">
-
-                            <span>Total Barang</span>
-
-                            <span id="totalItem">
-
-                                0 Barang
-
-                            </span>
+                            </div>
 
                         </div>
 
-                        <div class="flex justify-between mb-5">
+                        {{-- Pembayaran --}}
+                        <div class="bg-white rounded-2xl shadow border p-6">
 
-                            <span>Total</span>
+                            <div class="flex justify-between mb-3">
 
-                            <span
-                                id="totalHarga"
-                                class="font-bold text-xl">
+                                <span>Total Barang</span>
 
-                                Rp 0
+                                <span id="totalItem">
 
-                            </span>
+                                    0 Barang
+
+                                </span>
+
+                            </div>
+
+                            <div class="flex justify-between mb-5">
+
+                                <span>Total</span>
+
+                                <span
+                                    id="totalHarga"
+                                    class="font-bold text-xl">
+
+                                    Rp 0
+
+                                </span>
+
+                            </div>
+
+                            <hr>
+
+                            <div class="mt-6">
+
+                                <label class="font-semibold">
+
+                                    Jumlah Bayar
+
+                                </label>
+
+                                <input
+                                    id="cash"
+                                    type="number"
+                                    min="0"
+                                    step="1"
+                                    placeholder="Masukkan uang"
+                                    class="mt-2 w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-yellow-400 outline-none">
+
+                            </div>
+
+                            <div class="flex justify-between mt-6">
+
+                                <span>
+
+                                    Kembalian
+
+                                </span>
+
+                                <span
+                                    id="kembalian"
+                                    class="font-bold text-green-600">
+
+                                    Rp 0
+
+                                </span>
+
+                            </div>
+
+                            <button
+                                id="btnCheckout"
+                                disabled
+                                class="w-full mt-8 py-3 rounded-xl bg-gray-300 text-gray-500 font-bold cursor-not-allowed">
+
+                                BELI
+
+                            </button>
 
                         </div>
-
-                        <hr>
-
-                        <div class="mt-6">
-
-                            <label class="font-semibold">
-
-                                Jumlah Bayar
-
-                            </label>
-
-                            <input
-                                id="cash"
-                                type="number"
-                                min="0"
-                                step="1"
-                                placeholder="Masukkan uang"
-                                class="mt-2 w-full rounded-lg border px-4 py-3 focus:ring-2 focus:ring-yellow-400 outline-none">
-
-                        </div>
-
-                        <div class="flex justify-between mt-6">
-
-                            <span>
-
-                                Kembalian
-
-                            </span>
-
-                            <span
-                                id="kembalian"
-                                class="font-bold text-green-600">
-
-                                Rp 0
-
-                            </span>
-
-                        </div>
-
-                        <button
-                            id="btnCheckout"
-                            disabled
-                            class="w-full mt-8 py-3 rounded-xl bg-gray-300 text-gray-500 font-bold cursor-not-allowed">
-
-                            BELI
-
-                        </button>
 
                     </div>
 
@@ -206,7 +213,5 @@
 
     </div>
 
-</div>
-
-@vite('resources/js/kasir.js')
-@endsection
+    @vite('resources/js/kasir.js')
+    @endsection

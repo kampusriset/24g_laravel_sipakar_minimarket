@@ -19,20 +19,42 @@ class KasirController extends Controller
     public function index()
     {
         $categories = Category::orderBy('nama_kategori')->get();
+
+        $products = Product::with('category')
+            ->where('stock', '>', 0)
+            ->orderBy('nama_produk')
+            ->get();
+
         $today = now()->format('Ymd');
+
         $lastSale = Sale::whereDate('tanggal', today())
             ->latest('id')
             ->first();
 
+
         if ($lastSale) {
-            $lastNumber = (int) substr($lastSale->invoice_number, -4);
-            $invoice = "INV-{$today}-" . str_pad($lastNumber + 1, 4, '0', STR_PAD_LEFT);
+
+            $lastNumber = (int) substr(
+                $lastSale->invoice_number,
+                -4
+            );
+
+            $invoice = "INV-{$today}-" .
+                str_pad(
+                    $lastNumber + 1,
+                    4,
+                    '0',
+                    STR_PAD_LEFT
+                );
         } else {
+
             $invoice = "INV-{$today}-0001";
         }
 
+
         return view('kasir.index', compact(
             'categories',
+            'products',
             'invoice'
         ));
     }

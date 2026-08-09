@@ -4,6 +4,13 @@
 
 const search = document.getElementById("searchProduct");
 const result = document.getElementById("searchResult");
+const app = document.querySelector('#kasir-app');
+
+const products = JSON.parse(
+    app.dataset.products
+);
+
+console.log(products);
 
 // Jika bukan halaman kasir, hentikan script
 if (!search || !result) {
