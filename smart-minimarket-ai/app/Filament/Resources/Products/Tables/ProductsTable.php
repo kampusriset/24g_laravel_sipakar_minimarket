@@ -121,6 +121,12 @@ class ProductsTable
 
             ])
 
+            ->headerActions([
+                \Filament\Actions\CreateAction::make()
+                    ->label('Tambah Produk')
+                    ->icon('heroicon-o-plus'),
+            ])
+
             ->recordActions([
                 EditAction::make()
                     ->label('Edit')

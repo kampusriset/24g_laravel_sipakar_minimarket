@@ -46,4 +46,24 @@ class Product extends Model
     {
         return $this->hasMany(Restock::class);
     }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Product $product) {
+            $lastProduct = Product::query()
+                ->orderByDesc('id')
+                ->first();
+
+            $nextNumber = $lastProduct
+                ? $lastProduct->id + 1
+                : 1;
+
+            $product->kode_produk = 'PRD-' . str_pad(
+                $nextNumber,
+                4,
+                '0',
+                STR_PAD_LEFT
+            );
+        });
+    }
 }
