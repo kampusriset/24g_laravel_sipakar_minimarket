@@ -126,7 +126,7 @@
                 Laporan
             </h3>
 
-            <a href="{{ url('/laporan') }}"
+            <a href="{{ route('laporan.index') }}"
                 class="flex items-center gap-3 px-2 py-2 rounded-lg
                 text-sm text-gray-800
                 hover:bg-yellow-100 transition">
