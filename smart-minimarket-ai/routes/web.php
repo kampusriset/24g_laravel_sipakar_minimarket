@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DashboardController;;
+use App\Http\Controllers\LaporanController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,6 +30,15 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/dashboard-report', [DashboardController::class, 'index'])->name('dashboard.report');
     Route::get('/restock', [RestockController::class, 'index'])->name('restock.index');
+
+    Route::get('/laporan', [LaporanController::class, 'index'])
+    ->name('laporan.index');
+
+    Route::get('/laporan/pdf', [LaporanController::class, 'pdf'])
+    ->name('laporan.pdf');
+
+    Route::get('/laporan/excel', [LaporanController::class, 'excel'])
+    ->name('laporan.excel');
 });
 
 require __DIR__ . '/auth.php';
