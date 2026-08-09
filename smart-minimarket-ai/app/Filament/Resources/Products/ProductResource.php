@@ -42,9 +42,9 @@ class ProductResource extends Resource
 
                         Forms\Components\TextInput::make('kode_produk')
                             ->label('Kode Produk')
-                            ->required()
-                            ->maxLength(255)
-                            ->disabled(),
+                            ->disabled()
+                            ->dehydrated()
+                            ->unique(ignoreRecord: true),
 
                         Forms\Components\TextInput::make('nama_produk')
                             ->label('Nama Produk')
@@ -275,10 +275,11 @@ class ProductResource extends Resource
     */
 
     public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListProducts::route('/'),
-            'edit' => Pages\EditProduct::route('/{record}/edit'),
-        ];
-    }
+{
+    return [
+        'index' => Pages\ListProducts::route('/'),
+        'create' => Pages\CreateProduct::route('/create'),
+        'edit' => Pages\EditProduct::route('/{record}/edit'),
+    ];
+}
 }
