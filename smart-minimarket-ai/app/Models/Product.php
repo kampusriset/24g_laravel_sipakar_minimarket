@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Restock;
 
 class Product extends Model
 {
@@ -38,5 +40,10 @@ class Product extends Model
     public function stockHistories()
     {
         return $this->hasMany(StockHistory::class);
+    }
+
+    public function restocks(): HasMany
+    {
+        return $this->hasMany(Restock::class);
     }
 }

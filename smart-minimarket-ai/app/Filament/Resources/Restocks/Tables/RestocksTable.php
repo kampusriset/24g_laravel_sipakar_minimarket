@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Filament\Resources\Restocks\Tables;
+
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+
+class RestocksTable
+{
+    public static function configure(Table $table): Table
+    {
+        return $table
+            ->columns([
+                TextColumn::make('product.id')
+                    ->searchable(),
+                TextColumn::make('supplier.id')
+                    ->searchable(),
+                TextColumn::make('jumlah')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('harga_beli')
+                    ->numeric()
+                    ->sortable(),
+                TextColumn::make('tanggal_restock')
+                    ->date()
+                    ->sortable(),
+                TextColumn::make('nomor_restock')
+                    ->searchable(),
+                TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                //
+            ])
+            ->recordActions([
+                EditAction::make(),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
+    }
+}
