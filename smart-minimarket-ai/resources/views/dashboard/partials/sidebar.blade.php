@@ -66,7 +66,7 @@
 
 
             {{-- Riwayat Restock --}}
-            <a href="{{ url('/history') }}"
+            <a href="{{ route('history.restock') }}"
                 class="flex items-center gap-3 px-2 py-2 rounded-lg
                 text-sm text-gray-800
                 hover:bg-yellow-100 transition">

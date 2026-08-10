@@ -2,37 +2,68 @@
 
 namespace App\Filament\Resources\RestockPredictions\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Tables;
 use Filament\Tables\Table;
 
 class RestockPredictionsTable
 {
+
     public static function configure(Table $table): Table
     {
         return $table
+
             ->columns([
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+
+                Tables\Columns\TextColumn::make('ranking')
+                    ->label('Ranking')
+                    ->rowIndex(),
+
+
+                Tables\Columns\TextColumn::make('product.nama_produk')
+                    ->label('Produk')
+                    ->searchable(),
+
+
+                Tables\Columns\TextColumn::make('product.kategori.nama_kategori')
+                    ->label('Kategori'),
+
+
+                Tables\Columns\TextColumn::make('stock')
+                    ->label('Stock')
+                    ->badge()
+                    ->color('danger'),
+
+
+                Tables\Columns\TextColumn::make('minimum_stock')
+                    ->label('Minimum'),
+
+
+                Tables\Columns\TextColumn::make('rata_penjualan')
+                    ->label('Rata Penjualan/Minggu'),
+
+
+                Tables\Columns\TextColumn::make('score_ai')
+                    ->label('Score AI')
+                    ->badge()
+                    ->color(function ($state) {
+
+                        if ($state >= 80) {
+                            return 'danger';
+                        }
+
+                        if ($state >= 50) {
+                            return 'warning';
+                        }
+
+                        return 'success';
+
+                    }),
+
             ])
-            ->filters([
-                //
-            ])
-            ->recordActions([
-                EditAction::make(),
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+
+            ->defaultSort('score_ai','desc')
+
+            ->actions([]);
     }
+
 }

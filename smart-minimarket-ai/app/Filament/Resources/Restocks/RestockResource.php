@@ -22,8 +22,6 @@ class RestockResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-arrow-path';
 
-    protected static string|UnitEnum|null $navigationGroup = 'Admin';
-
     protected static ?string $navigationLabel = 'Restock Produk';
 
     protected static ?string $modelLabel = 'Restock';

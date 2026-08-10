@@ -9,6 +9,8 @@ use App\Http\Controllers\KasirController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DashboardController;;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\HistoryRestockController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -34,6 +36,10 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/dashboard-report', [DashboardController::class, 'index'])->name('dashboard.report');
     Route::get('/restock', [RestockController::class, 'index'])->name('restock.index');
+     Route::get('/riwayat-restock',
+        [HistoryRestockController::class,'index']
+    )
+    ->name('history.restock');
 
     Route::get('/laporan', [LaporanController::class, 'index'])
     ->name('laporan.index');
