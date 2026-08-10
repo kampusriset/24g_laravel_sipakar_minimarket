@@ -60,19 +60,39 @@ class ProductController extends Controller
     }
 
     public function search(Request $request)
-{
-    $query = $request->get('q');
+    {
+        $query = Product::with('category')
+            ->where('stock', '>', 0);
 
 
-    $products = Product::with([
-        'category'
-    ])
-    ->where('nama_produk', 'like', "%{$query}%")
-    ->where('stock', '>', 0)
-    ->limit(20)
-    ->get();
+        // Filter nama produk
+        if ($request->filled('q')) {
+
+            $search = $request->q;
+
+            $query->where(function ($q) use ($search) {
+
+                $q->where('nama_produk', 'like', "%{$search}%")
+                    ->orWhere('kode_produk', 'like', "%{$search}%");
+            });
+        }
 
 
-    return response()->json($products);
-}
+        // Filter kategori
+        if ($request->filled('category_id')) {
+
+            $query->where(
+                'kategori_id',
+                $request->category_id
+            );
+        }
+
+
+        $products = $query
+            ->limit(20)
+            ->get();
+
+
+        return response()->json($products);
+    }
 }

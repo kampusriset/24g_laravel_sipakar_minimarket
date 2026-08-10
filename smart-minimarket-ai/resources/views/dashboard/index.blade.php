@@ -8,7 +8,7 @@
 
         {{-- TOTAL PENJUALAN --}}
         <div class="col-span-3 bg-white rounded-2xl shadow-md border
-                hover:shadow-xl transition p-6">
+        hover:shadow-xl transition p-6 overflow-hidden">
 
             <div class="flex items-start gap-4">
 
@@ -23,10 +23,8 @@
                         Total Penjualan
                     </p>
 
-                    <h2 class="text-2xl font-bold mt-4 break-words">
-
+                    <h2 class="text-xl font-bold mt-4 whitespace-nowrap">
                         Rp {{ number_format($totalPenjualan,0,',','.') }}
-
                     </h2>
 
                 </div>
@@ -119,18 +117,18 @@
         <div class="xl:col-span-2 bg-white rounded-2xl shadow-md border p-6">
 
             <div class="flex justify-between items-center mb-4">
-
                 <h2 class="text-xl font-bold">
-
-                    Trend Penjualan
-
+                    Trend Penjualan 7 Hari Terakhir
                 </h2>
-
             </div>
 
-            <canvas id="salesChart" height="120"></canvas>
+            <div class="relative h-[350px]">
+                <canvas id="salesTrendChart"></canvas>
+            </div>
 
         </div>
+
+
 
         {{-- Ringkasan AI --}}
         <div class="bg-white rounded-2xl shadow-md border p-6">
@@ -317,4 +315,19 @@
 
     </div>
 
-    @endsection
+    <<script>
+
+        window.salesChartLabels = {{ Js::from($chartLabels) }};
+
+        window.salesChartData = {{ Js::from($chartData) }};
+
+        </script>
+
+
+
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        @vite('resources/js/dashboard.js')
+
+        @endsection

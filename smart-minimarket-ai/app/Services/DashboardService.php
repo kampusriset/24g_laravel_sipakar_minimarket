@@ -2,27 +2,134 @@
 
 namespace App\Services;
 
+
 use App\Models\Product;
+use App\Models\Sale;
 use App\Models\SaleDetail;
 use Carbon\Carbon;
+use App\Services\FuzzyService;
+
 
 class DashboardService
 {
     protected $fuzzy;
+
 
     public function __construct(FuzzyService $fuzzy)
     {
         $this->fuzzy = $fuzzy;
     }
 
-    /*
-    =========================================================
-    ANALISIS RESTOCK
-    =========================================================
-    */
+
+    public function getDashboardData()
+    {
+
+
+        $totalPenjualan = Sale::sum('total_harga');
+
+
+        $totalTransaksi = Sale::count();
+
+
+        $stokMenipis = Product::whereColumn(
+            'stock',
+            '<=',
+            'minimum_stock'
+        )
+            ->orderBy('stock')
+            ->take(5)
+            ->get();
+
+
+
+        $produkTerlaris = SaleDetail::selectRaw(
+            'product_id, SUM(qty) as total'
+        )
+            ->with('product')
+            ->groupBy('product_id')
+            ->orderByDesc('total')
+            ->take(5)
+            ->get()
+            ->map(function ($item) {
+
+                return (object)[
+
+                    'nama_produk' =>
+                    $item->product->nama_produk,
+
+                    'total' =>
+                    $item->total
+
+                ];
+            });
+
+
+
+        $trendPenjualan = Sale::selectRaw(
+            'DATE(tanggal) as tanggal,
+                 SUM(total_harga) as total'
+        )
+            ->where(
+                'tanggal',
+                '>=',
+                now()->subDays(7)
+            )
+            ->groupBy('tanggal')
+            ->orderBy('tanggal')
+            ->get();
+
+
+
+        $chartLabels = $trendPenjualan
+            ->pluck('tanggal')
+            ->map(function ($tanggal) {
+
+                return Carbon::parse($tanggal)
+                    ->format('d M');
+            });
+
+
+
+        $chartData = $trendPenjualan
+            ->pluck('total');
+
+
+
+        // AI RESTOCK
+        $ai = $this->getRestockAnalysis();
+
+
+
+        return array_merge(
+
+            [
+
+                'totalPenjualan' => $totalPenjualan,
+
+                'totalTransaksi' => $totalTransaksi,
+
+                'stokMenipis' => $stokMenipis,
+
+                'produkTerlaris' => $produkTerlaris,
+
+
+                'chartLabels' => $chartLabels,
+
+                'chartData' => $chartData,
+
+            ],
+
+            $ai
+
+        );
+    }
+
+
+
 
     public function getRestockAnalysis()
     {
+
         $products = Product::with(['category', 'supplier'])
             ->orderBy('nama_produk')
             ->get();
@@ -47,9 +154,9 @@ class DashboardService
             */
 
             $totalPenjualan7Hari = SaleDetail::where(
-                    'product_id',
-                    $product->id
-                )
+                'product_id',
+                $product->id
+            )
                 ->whereBetween('created_at', [
                     $tanggalMulai,
                     $tanggalSelesai
@@ -193,13 +300,13 @@ class DashboardService
                 */
 
                 'stockSedikit' =>
-                    $hasil['membership']['stock']['sedikit'],
+                $hasil['membership']['stock']['sedikit'],
 
                 'stockSedang' =>
-                    $hasil['membership']['stock']['sedang'],
+                $hasil['membership']['stock']['sedang'],
 
                 'stockBanyak' =>
-                    $hasil['membership']['stock']['banyak'],
+                $hasil['membership']['stock']['banyak'],
 
 
                 /*
@@ -209,13 +316,13 @@ class DashboardService
                 */
 
                 'jualRendah' =>
-                    $hasil['membership']['penjualan']['rendah'],
+                $hasil['membership']['penjualan']['rendah'],
 
                 'jualSedang' =>
-                    $hasil['membership']['penjualan']['sedang'],
+                $hasil['membership']['penjualan']['sedang'],
 
                 'jualTinggi' =>
-                    $hasil['membership']['penjualan']['tinggi'],
+                $hasil['membership']['penjualan']['tinggi'],
 
 
                 /*
@@ -225,13 +332,13 @@ class DashboardService
                 */
 
                 'leadCepat' =>
-                    $hasil['membership']['leadTime']['cepat'],
+                $hasil['membership']['leadTime']['cepat'],
 
                 'leadSedang' =>
-                    $hasil['membership']['leadTime']['sedang'],
+                $hasil['membership']['leadTime']['sedang'],
 
                 'leadLama' =>
-                    $hasil['membership']['leadTime']['lama'],
+                $hasil['membership']['leadTime']['lama'],
             ];
         }
 
@@ -272,7 +379,7 @@ class DashboardService
         =========================================================
         */
 
-        $chartData = [
+        $restokchartData = [
 
             'Segera Restock' => $jumlahRestock,
 
@@ -315,9 +422,9 @@ class DashboardService
         */
 
         $trend = SaleDetail::selectRaw(
-                'DATE(created_at) as tanggal,
+            'DATE(created_at) as tanggal,
                  SUM(qty) as total'
-            )
+        )
             ->whereBetween('created_at', [
                 $tanggalMulai,
                 $tanggalSelesai
@@ -362,7 +469,7 @@ class DashboardService
 
             'jumlahAman' => $jumlahAman,
 
-            'chartData' => $chartData,
+            'restokchartData' => $restokchartData,
 
             'barChartData' => $barChartData,
 

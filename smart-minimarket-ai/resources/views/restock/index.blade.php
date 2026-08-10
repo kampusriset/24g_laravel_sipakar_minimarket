@@ -292,6 +292,16 @@
 
                         {{-- Score --}}
                         <td class="px-5 py-4 text-center">
+                            @php
+                            if ($product->score >= 80) {
+                            $scoreClass = 'bg-red-100 text-red-600';
+                            } elseif ($product->score >= 50) {
+                            $scoreClass = 'bg-yellow-100 text-yellow-600';
+                            } else {
+                            $scoreClass = 'bg-green-100 text-green-600';
+                            }
+
+                            @endphp
 
                             <span
                                 class="
@@ -299,13 +309,7 @@
                                     justify-center rounded-xl px-3 py-2
                                     font-bold
 
-                                    @if($product->score >= 80)
-                                        bg-red-100 text-red-600
-                                    @elseif($product->score >= 50)
-                                        bg-yellow-100 text-yellow-600
-                                    @else
-                                        bg-green-100 text-green-600
-                                    @endif
+                                    {{ $scoreClass }} 
                                 ">
                                 {{ number_format($product->score, 0) }}
                             </span>

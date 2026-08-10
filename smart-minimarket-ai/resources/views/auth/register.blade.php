@@ -24,7 +24,7 @@
                                tracking-[-2px]
                                text-black"
                     >
-                        Mart
+                        Next
                     </h1>
 
                     <span
@@ -36,7 +36,7 @@
                                text-[#FFD400]
                                [text-shadow:1px_1px_0px_#111]"
                     >
-                        In
+                        Market
                     </span>
 
                 </div>

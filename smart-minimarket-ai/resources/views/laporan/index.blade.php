@@ -6,300 +6,351 @@
 
 @section('dashboard-content')
 
-<div class="max-w-7xl mx-auto">
+{{-- ========================================================= --}}
+{{-- EXPORT --}}
+{{-- ========================================================= --}}
 
-    {{-- HEADER --}}
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+<div class="flex items-center gap-3 mb-5">
 
+    <a
+        href="{{ route('laporan.pdf') }}"
+        class="inline-flex items-center gap-2 rounded-xl bg-red-500 px-5 py-2.5
+               text-sm font-semibold text-white shadow-sm
+               transition hover:bg-red-600">
+
+       
+        PDF
+
+    </a>
+
+
+    <a
+        href="{{ route('laporan.excel') }}"
+        class="inline-flex items-center gap-2 rounded-xl bg-green-500 px-5 py-2.5
+               text-sm font-semibold text-white shadow-sm
+               transition hover:bg-green-600">
+
+        
+        Excel
+
+    </a>
+
+</div>
+
+
+{{-- ========================================================= --}}
+{{-- FILTER --}}
+{{-- ========================================================= --}}
+
+<div class="mb-6 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+
+    <form
+        method="GET"
+        action="{{ route('laporan.index') }}"
+        class="flex flex-wrap items-end gap-4">
+
+
+        {{-- TANGGAL MULAI --}}
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">
-                Laporan Penjualan
-            </h1>
 
-            <p class="text-sm text-gray-500 mt-1">
-                Lihat transaksi berdasarkan periode dan unduh laporan.
-            </p>
-        </div>
+            <label class="mb-1 block text-sm font-medium text-gray-600">
+                Tanggal Mulai
+            </label>
 
-        {{-- BUTTON EXPORT --}}
-        <div class="flex flex-wrap gap-2">
-
-            {{-- PDF --}}
-            <a href="{{ route('laporan.pdf', request()->query()) }}"
-               class="px-4 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white font-semibold transition">
-
-                PDF
-
-            </a>
-
-            {{-- EXCEL --}}
-            <a href="{{ route('laporan.excel', request()->query()) }}"
-               class="px-4 py-2.5 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold transition">
-
-                Excel
-
-            </a>
+            <input
+                type="date"
+                name="tanggal_mulai"
+                value="{{ request('tanggal_mulai') }}"
+                class="h-11 w-44 rounded-xl border border-gray-300
+                       bg-white px-4 text-sm
+                       outline-none transition
+                       focus:border-yellow-400
+                       focus:ring-2 focus:ring-yellow-100">
 
         </div>
+
+
+        {{-- TANGGAL AKHIR --}}
+        <div>
+
+            <label class="mb-1 block text-sm font-medium text-gray-600">
+                Tanggal Akhir
+            </label>
+
+            <input
+                type="date"
+                name="tanggal_akhir"
+                value="{{ request('tanggal_akhir') }}"
+                class="h-11 w-44 rounded-xl border border-gray-300
+                       bg-white px-4 text-sm
+                       outline-none transition
+                       focus:border-yellow-400
+                       focus:ring-2 focus:ring-yellow-100">
+
+        </div>
+
+
+        {{-- TERAPKAN --}}
+        <button
+            type="submit"
+            class="h-11 rounded-xl bg-yellow-400 px-6
+                   text-sm font-semibold text-gray-900
+                   transition hover:bg-yellow-500">
+
+            Terapkan
+
+        </button>
+
+
+        {{-- RESET --}}
+        <a
+            href="{{ route('laporan.index') }}"
+            class="inline-flex h-11 items-center rounded-xl
+                   border border-gray-300 px-6
+                   text-sm font-semibold text-gray-700
+                   transition hover:bg-gray-50">
+
+            Reset
+
+        </a>
+
+    </form>
+
+</div>
+
+
+{{-- ========================================================= --}}
+{{-- RINGKASAN --}}
+{{-- ========================================================= --}}
+
+<div class="mb-6 grid grid-cols-1 gap-5 md:grid-cols-3">
+
+
+    {{-- TOTAL PENJUALAN --}}
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+
+        <p class="text-sm text-gray-500">
+            Total Penjualan
+        </p>
+
+        <p class="mt-2 text-3xl font-bold text-gray-900">
+
+            Rp {{ number_format(
+                $totalPenjualan,
+                0,
+                ',',
+                '.'
+            ) }}
+
+        </p>
 
     </div>
 
 
-    {{-- FILTER LAPORAN --}}
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-6">
+    {{-- TOTAL TRANSAKSI --}}
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
 
-        <form method="GET"
-              action="{{ route('laporan.index') }}"
-              class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        <p class="text-sm text-gray-500">
+            Total Transaksi
+        </p>
 
-            {{-- TANGGAL MULAI --}}
-            <div>
+        <p class="mt-2 text-3xl font-bold text-gray-900">
 
-                <label for="start_date"
-                       class="block text-sm font-semibold text-gray-700 mb-2">
+            {{ $totalTransaksi }}
 
-                    Tanggal Mulai
-
-                </label>
-
-                <input
-                    id="start_date"
-                    type="date"
-                    name="start_date"
-                    value="{{ $startDate->format('Y-m-d') }}"
-                    class="w-full rounded-lg border-gray-300 focus:border-yellow-400 focus:ring-yellow-400"
-                >
-
-            </div>
-
-
-            {{-- TANGGAL AKHIR --}}
-            <div>
-
-                <label for="end_date"
-                       class="block text-sm font-semibold text-gray-700 mb-2">
-
-                    Tanggal Akhir
-
-                </label>
-
-                <input
-                    id="end_date"
-                    type="date"
-                    name="end_date"
-                    value="{{ $endDate->format('Y-m-d') }}"
-                    class="w-full rounded-lg border-gray-300 focus:border-yellow-400 focus:ring-yellow-400"
-                >
-
-            </div>
-
-
-            {{-- BUTTON FILTER --}}
-            <button
-                type="submit"
-                class="w-full px-5 py-2.5 rounded-lg bg-yellow-400 hover:bg-yellow-500 font-semibold transition">
-
-                Terapkan Filter
-
-            </button>
-
-
-            {{-- RESET --}}
-            <a
-                href="{{ route('laporan.index') }}"
-                class="w-full text-center px-5 py-2.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 font-semibold transition">
-
-                Reset
-
-            </a>
-
-        </form>
+        </p>
 
     </div>
 
 
-    {{-- SUMMARY --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+    {{-- BARANG TERJUAL --}}
+    <div class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+
+        <p class="text-sm text-gray-500">
+            Barang Terjual
+        </p>
+
+        <p class="mt-2 text-3xl font-bold text-gray-900">
+
+            {{ $totalBarang }}
+
+        </p>
+
+    </div>
+
+</div>
 
 
-        {{-- TOTAL PENJUALAN --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+{{-- ========================================================= --}}
+{{-- DAFTAR TRANSAKSI --}}
+{{-- ========================================================= --}}
 
-            <p class="text-sm text-gray-500">
-                Total Penjualan
-            </p>
-
-            <p class="text-2xl font-bold text-gray-900 mt-2">
-
-                Rp {{ number_format(
-                    $summary['totalPenjualan'],
-                    0,
-                    ',',
-                    '.'
-                ) }}
-
-            </p>
-
-        </div>
+<div class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
 
 
-        {{-- TOTAL TRANSAKSI --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+    {{-- HEADER TABLE --}}
+    <div class="border-b border-gray-200 px-6 py-5">
 
-            <p class="text-sm text-gray-500">
-                Total Transaksi
-            </p>
+        <h2 class="text-xl font-bold text-gray-900">
+            Daftar Transaksi
+        </h2>
 
-            <p class="text-2xl font-bold text-gray-900 mt-2">
+        <p class="mt-1 text-sm text-gray-500">
 
-                {{ number_format(
-                    $summary['totalTransaksi'],
-                    0,
-                    ',',
-                    '.'
-                ) }}
+            Periode
+            {{ $startDate->format('d/m/Y') }}
+            -
+            {{ $endDate->format('d/m/Y') }}
 
-            </p>
-
-        </div>
-
-
-        {{-- BARANG TERJUAL --}}
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-
-            <p class="text-sm text-gray-500">
-                Barang Terjual
-            </p>
-
-            <p class="text-2xl font-bold text-gray-900 mt-2">
-
-                {{ number_format(
-                    $summary['totalBarang'],
-                    0,
-                    ',',
-                    '.'
-                ) }}
-
-            </p>
-
-        </div>
+        </p>
 
     </div>
 
 
-    {{-- TABLE TRANSAKSI --}}
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    {{-- TABLE --}}
+    <div class="overflow-x-auto">
+
+        <table class="w-full min-w-[1000px]">
 
 
-        {{-- TABLE HEADER --}}
-        <div class="px-5 py-4 border-b border-gray-200">
+            {{-- HEADER --}}
+            <thead>
 
-            <h2 class="font-bold text-gray-900">
-                Daftar Transaksi
-            </h2>
-
-            <p class="text-sm text-gray-500">
-
-                Periode
-                {{ $startDate->format('d/m/Y') }}
-                -
-                {{ $endDate->format('d/m/Y') }}
-
-            </p>
-
-        </div>
+                <tr class="bg-yellow-400 text-left text-sm font-semibold text-gray-900">
 
 
-        {{-- TABLE --}}
-        <div class="overflow-x-auto">
-
-            <table class="w-full">
-
-                <thead class="bg-yellow-400">
-
-                    <tr>
-
-                        <th class="text-left p-4">
-                            No
-                        </th>
-
-                        <th class="text-left p-4">
-                            Tanggal
-                        </th>
-
-                        <th class="text-left p-4">
-                            Invoice
-                        </th>
-
-                        <th class="text-left p-4">
-                            Kasir
-                        </th>
-
-                        <th class="text-center p-4">
-                            Barang
-                        </th>
-
-                        <th class="text-right p-4">
-                            Total
-                        </th>
-
-                        <th class="text-center p-4">
-                            Status
-                        </th>
-
-                    </tr>
-
-                </thead>
+                    <th class="px-5 py-4 text-center">
+                        No
+                    </th>
 
 
-                <tbody>
-
-                    @forelse($sales as $sale)
-
-                        <tr class="border-b border-gray-100 hover:bg-gray-50">
-
-                            {{-- NOMOR --}}
-                            <td class="p-4">
-
-                                {{ $sales->firstItem() + $loop->index }}
-
-                            </td>
+                    <th class="px-5 py-4">
+                        Tanggal
+                    </th>
 
 
-                            {{-- TANGGAL --}}
-                            <td class="p-4">
-
-                                {{ $sale->tanggal->format('d/m/Y H:i') }}
-
-                            </td>
+                    <th class="px-5 py-4">
+                        Invoice
+                    </th>
 
 
-                            {{-- INVOICE --}}
-                            <td class="p-4 font-semibold">
+                    <th class="px-5 py-4">
+                        Kasir
+                    </th>
+
+
+                    <th class="px-5 py-4">
+                        Nama Barang
+                    </th>
+
+
+                    <th class="px-5 py-4 text-center">
+                        Jumlah
+                    </th>
+
+
+                    <th class="px-5 py-4 text-right">
+                        Total
+                    </th>
+
+
+                    <th class="px-5 py-4 text-center">
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            {{-- BODY --}}
+            <tbody class="divide-y divide-gray-100">
+
+                @forelse($sales as $sale)
+
+                    <tr class="transition hover:bg-gray-50">
+
+
+                        {{-- NO --}}
+                        <td class="px-5 py-4 text-center text-sm text-gray-600">
+
+                            {{ $sales->firstItem() + $loop->index }}
+
+                        </td>
+
+
+                        {{-- TANGGAL --}}
+                        <td class="px-5 py-4 text-sm text-gray-600">
+
+                            {{ $sale->tanggal->format('d/m/Y H:i') }}
+
+                        </td>
+
+
+                        {{-- INVOICE --}}
+                        <td class="px-5 py-4">
+
+                            <span class="font-semibold text-gray-900">
 
                                 {{ $sale->invoice_number }}
 
-                            </td>
+                            </span>
+
+                        </td>
 
 
-                            {{-- KASIR --}}
-                            <td class="p-4">
+                        {{-- KASIR --}}
+                        <td class="px-5 py-4 text-sm text-gray-600">
 
-                                {{ $sale->user?->name ?? '-' }}
+                            {{ $sale->user?->name ?? '-' }}
 
-                            </td>
+                        </td>
 
 
-                            {{-- JUMLAH BARANG --}}
-                            <td class="p-4 text-center">
+                        {{-- NAMA BARANG --}}
+                        <td class="px-5 py-4">
+
+                            <div class="space-y-1">
+
+                                @forelse($sale->saleDetails as $detail)
+
+                                    <div class="text-sm font-medium text-gray-900">
+
+                                        {{ $detail->product?->nama_produk ?? '-' }}
+
+                                    </div>
+
+                                @empty
+
+                                    <span class="text-sm text-gray-400">
+                                        Tidak ada barang
+                                    </span>
+
+                                @endforelse
+
+                            </div>
+
+                        </td>
+
+
+                        {{-- JUMLAH --}}
+                        <td class="px-5 py-4 text-center">
+
+                            <span class="inline-flex min-w-[40px] items-center justify-center
+                                         rounded-lg bg-gray-100 px-3 py-1
+                                         text-sm font-semibold text-gray-700">
 
                                 {{ $sale->saleDetails->sum('qty') }}
 
-                            </td>
+                            </span>
+
+                        </td>
 
 
-                            {{-- TOTAL --}}
-                            <td class="p-4 text-right font-semibold">
+                        {{-- TOTAL --}}
+                        <td class="px-5 py-4 text-right">
+
+                            <span class="font-semibold text-gray-900">
 
                                 Rp {{ number_format(
                                     $sale->total_harga,
@@ -308,77 +359,100 @@
                                     '.'
                                 ) }}
 
-                            </td>
+                            </span>
+
+                        </td>
 
 
-                            {{-- STATUS --}}
-                            <td class="p-4 text-center">
+                        {{-- STATUS --}}
+                        <td class="px-5 py-4 text-center">
 
-                                @if($sale->status === 'selesai')
+                            @if($sale->status === 'selesai')
 
-                                    <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                                <span
+                                    class="inline-flex items-center rounded-full
+                                           bg-green-100 px-3 py-1
+                                           text-xs font-semibold text-green-700">
 
-                                        Selesai
+                                    Selesai
 
-                                    </span>
+                                </span>
 
-                                @elseif($sale->status === 'pending')
+                            @elseif($sale->status === 'pending')
 
-                                    <span class="inline-block bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm">
+                                <span
+                                    class="inline-flex items-center rounded-full
+                                           bg-yellow-100 px-3 py-1
+                                           text-xs font-semibold text-yellow-700">
 
-                                        Pending
+                                    Pending
 
-                                    </span>
+                                </span>
 
-                                @else
+                            @else
 
-                                    <span class="inline-block bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm">
+                                <span
+                                    class="inline-flex items-center rounded-full
+                                           bg-red-100 px-3 py-1
+                                           text-xs font-semibold text-red-700">
 
-                                        Dibatalkan
+                                    Dibatalkan
 
-                                    </span>
+                                </span>
 
-                                @endif
+                            @endif
 
-                            </td>
+                        </td>
 
-                        </tr>
+                    </tr>
 
-                    @empty
+                @empty
 
-                        <tr>
+                    <tr>
 
-                            <td
-                                colspan="7"
-                                class="text-center py-12 text-gray-500">
+                        <td
+                            colspan="8"
+                            class="px-5 py-16 text-center">
 
-                                Tidak ada transaksi pada periode yang dipilih.
+                            <div class="text-gray-400">
 
-                            </td>
+                                <div class="text-4xl mb-3">
+                                    📋
+                                </div>
 
-                        </tr>
+                                <p class="font-medium text-gray-500">
+                                    Tidak ada transaksi
+                                </p>
 
-                    @endforelse
+                                <p class="mt-1 text-sm">
+                                    Tidak ada transaksi pada periode yang dipilih.
+                                </p>
 
-                </tbody>
+                            </div>
 
-            </table>
+                        </td>
+
+                    </tr>
+
+                @endforelse
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    {{-- PAGINATION --}}
+    @if($sales->hasPages())
+
+        <div class="border-t border-gray-200 px-5 py-4">
+
+            {{ $sales->links() }}
 
         </div>
 
-
-        {{-- PAGINATION --}}
-        @if($sales->hasPages())
-
-            <div class="px-5 py-4 border-t border-gray-200">
-
-                {{ $sales->links() }}
-
-            </div>
-
-        @endif
-
-    </div>
+    @endif
 
 </div>
 

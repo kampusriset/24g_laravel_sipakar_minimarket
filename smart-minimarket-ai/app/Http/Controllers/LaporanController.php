@@ -16,62 +16,70 @@ class LaporanController extends Controller
      */
     public function index(Request $request)
     {
-        // Ambil tanggal dari filter.
-        // Jika tidak ada, gunakan awal dan akhir bulan berjalan.
-        $startDate = $request->filled('start_date')
-            ? Carbon::parse($request->start_date)->startOfDay()
-            : Carbon::now()->startOfMonth()->startOfDay();
+        $startDate = $request->filled('tanggal_mulai')
+            ? Carbon::parse($request->tanggal_mulai)->startOfDay()
+            : now()->startOfMonth();
 
-        $endDate = $request->filled('end_date')
-            ? Carbon::parse($request->end_date)->endOfDay()
-            : Carbon::now()->endOfMonth()->endOfDay();
+        $endDate = $request->filled('tanggal_akhir')
+            ? Carbon::parse($request->tanggal_akhir)->endOfDay()
+            : now()->endOfDay();
 
 
-        // Ambil data transaksi
-        $sales = Sale::with([
-                'user',
-                'saleDetails.product'
-            ])
+        // =========================
+        // SEMUA TRANSAKSI
+        // Untuk menghitung statistik
+        // =========================
+
+        $allSales = Sale::with([
+            'user',
+            'saleDetails.product'
+        ])
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->orderBy('tanggal', 'desc')
-            ->paginate(15)
+            ->get();
+
+
+        // =========================
+        // STATISTIK
+        // =========================
+
+        $totalTransaksi = $allSales->count();
+
+        $totalBarang = $allSales->sum(function ($sale) {
+            return $sale->saleDetails->sum('qty');
+        });
+
+        $totalPenjualan = $allSales->sum('total_harga');
+
+
+        // =========================
+        // DATA TABEL
+        // Pagination
+        // =========================
+
+        $sales = Sale::with([
+            'user',
+            'saleDetails.product'
+        ])
+            ->whereBetween('tanggal', [$startDate, $endDate])
+            ->orderBy('tanggal', 'desc')
+            ->paginate(10)
             ->withQueryString();
 
 
-        // Total transaksi
-        $totalTransaksi = $sales->total();
-
-
-        // Total barang yang terjual
-        $totalBarang = $sales->getCollection()
-            ->sum(function ($sale) {
-                return $sale->saleDetails->sum('qty');
-            });
-
-
-        // Total penjualan
-        $totalPenjualan = $sales->getCollection()
-            ->sum(function ($sale) {
-                return $sale->total_harga;
-            });
-
-
-        $summary = [
-            'totalTransaksi' => $totalTransaksi,
-            'totalBarang' => $totalBarang,
-            'totalPenjualan' => $totalPenjualan,
-        ];
-
+        // =========================
+        // KIRIM KE VIEW
+        // =========================
 
         return view('laporan.index', compact(
             'sales',
-            'summary',
             'startDate',
-            'endDate'
+            'endDate',
+            'totalTransaksi',
+            'totalBarang',
+            'totalPenjualan'
         ));
     }
-
-
     /**
      * Download laporan dalam bentuk PDF.
      */
@@ -91,9 +99,9 @@ class LaporanController extends Controller
         // Tidak menggunakan paginate karena semua data
         // harus masuk ke laporan PDF.
         $sales = Sale::with([
-                'user',
-                'saleDetails.product'
-            ])
+            'user',
+            'saleDetails.product'
+        ])
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->orderBy('tanggal', 'desc')
             ->get();
@@ -141,10 +149,10 @@ class LaporanController extends Controller
         // Download PDF
         return $pdf->download(
             'laporan-penjualan-' .
-            $startDate->format('Y-m-d') .
-            '-sampai-' .
-            $endDate->format('Y-m-d') .
-            '.pdf'
+                $startDate->format('Y-m-d') .
+                '-sampai-' .
+                $endDate->format('Y-m-d') .
+                '.pdf'
         );
     }
 
@@ -166,9 +174,9 @@ class LaporanController extends Controller
 
         // Ambil seluruh transaksi
         $sales = Sale::with([
-                'user',
-                'saleDetails.product'
-            ])
+            'user',
+            'saleDetails.product'
+        ])
             ->whereBetween('tanggal', [$startDate, $endDate])
             ->orderBy('tanggal', 'desc')
             ->get();
@@ -194,9 +202,9 @@ class LaporanController extends Controller
         $sheet->setCellValue(
             'A2',
             'Periode: ' .
-            $startDate->format('d/m/Y') .
-            ' - ' .
-            $endDate->format('d/m/Y')
+                $startDate->format('d/m/Y') .
+                ' - ' .
+                $endDate->format('d/m/Y')
         );
 
 
@@ -291,56 +299,64 @@ class LaporanController extends Controller
 
             $jumlahBarang = $sale->saleDetails->sum('qty');
 
+            // Ambil nama-nama barang yang dibeli
+            $namaBarang = $sale->saleDetails
+                ->map(function ($detail) {
+                    return $detail->product?->nama_produk ?? '-';
+                })
+                ->unique()
+                ->implode(', ');
+
 
             $sheet->setCellValue(
                 'A' . $row,
                 $no
             );
 
-
             $sheet->setCellValue(
                 'B' . $row,
                 $sale->tanggal
-                    ? Carbon::parse($sale->tanggal)
-                        ->format('d/m/Y H:i')
+                    ? Carbon::parse($sale->tanggal)->format('d/m/Y H:i')
                     : '-'
             );
-
 
             $sheet->setCellValue(
                 'C' . $row,
                 $sale->invoice_number ?? '-'
             );
 
-
             $sheet->setCellValue(
                 'D' . $row,
                 $sale->user?->name ?? '-'
             );
 
-
+            // Nama barang
             $sheet->setCellValue(
                 'E' . $row,
+                $namaBarang
+            );
+
+            // Jumlah barang
+            $sheet->setCellValue(
+                'F' . $row,
                 $jumlahBarang
             );
 
-
+            // Total
             $sheet->setCellValue(
-                'F' . $row,
+                'G' . $row,
                 $sale->total_harga
             );
 
-
+            // Status
             $sheet->setCellValue(
-                'G' . $row,
+                'H' . $row,
                 ucfirst($sale->status ?? '-')
             );
-
 
             $row++;
             $no++;
         }
-
 
         // =========================
         // STYLE
@@ -411,7 +427,7 @@ class LaporanController extends Controller
                 $fileName,
                 [
                     'Content-Type' =>
-                        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 ]
             )
             ->deleteFileAfterSend(true);

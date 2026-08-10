@@ -3,7 +3,7 @@
     <div class="px-6 pt-8 pb-6">
 
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">
-            Mart<span class="text-yellow-400">In</span>
+            Next<span class="text-yellow-400">Market</span>
         </h1>
 
     </div>

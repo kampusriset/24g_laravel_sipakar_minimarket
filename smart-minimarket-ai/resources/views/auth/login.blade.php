@@ -11,11 +11,11 @@
                 <div class="flex items-center justify-center gap-3 mb-12">
 
                     <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-black">
-                        Mart
+                        Next
                     </h1>
 
                     <span class="text-4xl sm:text-5xl font-extrabold text-[#FFD400] [text-shadow:1px_1px_0_#111]">
-                        In
+                        Market
                     </span>
 
                 </div>

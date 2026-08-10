@@ -9,7 +9,7 @@
         content="width=device-width, initial-scale=1"
     >
 
-    <title>Mart In - Belanja Mudah dan Nyaman</title>
+    <title>Next Market - Belanja Mudah dan Nyaman</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -45,7 +45,7 @@
                            font-extrabold
                            tracking-[-1.5px]"
                 >
-                    Mart
+                    Next
                 </span>
 
                 <span
@@ -55,7 +55,7 @@
                            text-[#FFD400]
                            [text-shadow:1px_1px_0px_#111]"
                 >
-                    In
+                    Market
                 </span>
 
             </a>
@@ -193,7 +193,7 @@
                                    bg-[#FFD400]"
                         ></span>
 
-                        Selamat datang di Mart In
+                        Selamat datang di NextMarket
 
                     </div>
 
@@ -399,7 +399,7 @@
                                            font-extrabold
                                            tracking-[-2px]"
                                 >
-                                    Mart
+                                    Next
                                 </span>
 
                                 <span
@@ -411,7 +411,7 @@
                                            text-[#FFD400]
                                            [text-shadow:1px_1px_0px_#111]"
                                 >
-                                    In
+                                    Market
                                 </span>
 
                             </div>
@@ -515,7 +515,7 @@
                                uppercase
                                tracking-widest"
                     >
-                        Kenapa Mart In?
+                        Kenapa NextMarket?
                     </span>
 
                     <h2
@@ -720,7 +720,7 @@
                                uppercase
                                tracking-widest"
                     >
-                        Tentang Mart In
+                        Tentang NextMarket
                     </span>
 
                     <h2
@@ -790,7 +790,7 @@
                 <div class="flex items-center">
 
                     <span class="font-extrabold">
-                        Mart
+                        Next
                     </span>
 
                     <span
@@ -799,7 +799,7 @@
                                text-[#FFD400]
                                [text-shadow:1px_1px_0px_#111]"
                     >
-                        In
+                        Market
                     </span>
 
                 </div>

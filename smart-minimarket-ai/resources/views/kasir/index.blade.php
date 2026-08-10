@@ -22,7 +22,17 @@
                     id="kategoriFilter"
                     class="border rounded-lg px-4 py-2 bg-white">
 
-                    <option value="">Semua Kategori</option>
+                    <option value="">
+                        Semua Kategori
+                    </option>
+
+                    @foreach($categories as $category)
+
+                    <option value="{{ $category->id }}">
+                        {{ $category->nama_kategori }}
+                    </option>
+
+                    @endforeach
 
                 </select>
 
